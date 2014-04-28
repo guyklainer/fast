@@ -92,7 +92,7 @@ module.exports.ensureAuthenticated = function( req, service, privileges ){
 	else
 		allow = false;
 
-	// In View Router, so different params received
+	// In View Router, so params received are ( req, res, next )
 	if( service.hasOwnProperty( "end" ) && typeof( privileges ) == "function" ){
 		var res 	= service;
 		var next 	= privileges;

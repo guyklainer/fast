@@ -1,12 +1,9 @@
 
-var fs 			= require( 'fs' ),
-	path 		= require( 'path' ),
-	express 	= require( 'express' );
+var fs 		= require( 'fs' ),
+	path 	= require( 'path' );
 
 // Class Headers
 //--------------
-
-
 function Headers( location ){
 
 	this.headers = {
@@ -17,10 +14,10 @@ function Headers( location ){
 	this.location 		= location;
 	this.uiPath 		= path.join( location, Core.config.globals.publicFolder );
 	this.headersPath 	= path.join( this.uiPath, Core.config.globals.headersFolder );
-	this.replacePatern	= "[*URL*]";
+	this.replacePattern	= "[*URL*]";
 	this.templates 		= {
-		"js" 	: '<script src="' + this.replacePatern + '"></script>',
-		"css"	: '<link href="' + this.replacePatern + '">'
+		"js" 	: '<script src="' + this.replacePattern + '"></script>',
+		"css"	: '<link rel="stylesheet" type="text/css"  href="' + this.replacePattern + '">'
 	};
 
 	this.init();
@@ -28,6 +25,7 @@ function Headers( location ){
 	return this.headers;
 }
 
+// Methods
 Headers.prototype.loadStatics = function( ext, location, template ){
 
 	var statics = [],
@@ -46,7 +44,7 @@ Headers.prototype.loadStatics = function( ext, location, template ){
 	});
 
 	for( var i = 0; i < statics.length; i++ )
-		this.headers[ ext ].push( template.replace( this.replacePatern, statics[i] ) );
+		this.headers[ ext ].push( template.replace( this.replacePattern, statics[i] ) );
 };
 
 Headers.prototype.init = function(){
@@ -62,6 +60,4 @@ Headers.prototype.init = function(){
 };
 
 
-module.exports = function( location ){
-	return new Headers( location );
-};
+module.exports = Headers;

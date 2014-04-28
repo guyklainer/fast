@@ -12,8 +12,40 @@ module.exports.routes = {
 */
 
 module.exports.routes = {
-	"/:id" 	: { method : "get", service : "getByID" },
-	"/"  	: { method : "get", service : "service" }
+	"/"  	: {
+		summery 	: "Get list",
+		httpMethod 	: "get",
+		parameters 	:[
+			{
+				name 			: "username",
+				description 	: "User Name",
+				required 		: true,
+				dataType 		: "string",
+				allowMultiple 	: true,
+				paramType 		: "query"
+			},
+			{
+				name 			: "id",
+				description 	: "User ID",
+				required 		: false,
+				dataType 		: "number",
+				allowMultiple 	: false,
+				paramType 		: "path"
+			}
+		],
+
+		service 	: "service"
+	},
+
+	"/:id" 	: {
+		summery 	: "Get list by ID",
+		httpMethod 	: "get",
+		parameters	: [
+			{ name : "id", description : "User ID", required : true, dataType : "number", allowMultiple : false, paramType : "path" }
+		],
+
+		service 	: "getByID"
+	}
 };
 
 module.exports.privileges = {
@@ -26,9 +58,5 @@ module.exports.getByID = function( req, res ){
 };
 
 module.exports.service = function( req, res ){
-	setTimeout( function(){
-		Core.orm.targeting.update( options )
-
-		res.success( "done", req );
-	}, 1000 );
+	res.success( "done" );
 };

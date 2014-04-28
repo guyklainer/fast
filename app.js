@@ -1,19 +1,16 @@
 
-/**
- * Module dependencies.
- */
-
-var express 	= require( 'express' ),
-	http 		= require( 'http');
+var http 		= require( 'http' ),
+	path		= require( "path"),
+	CoreModule 	= require( './core/core' );
 
 /**
  * Init App.
  */
-Core 		= require( './core/core' );
-Core.app	= express();
+Core = CoreModule( path.join( __dirname, "core" ) );
 
-Core.load( function(){
-	var config	= Core.config.settings;
+CoreModule.load( function(){
+
+	var config = Core.config.settings;
 
 	Core.environment.load();
 	Core.config.load();
@@ -21,14 +18,8 @@ Core.load( function(){
 	Core.api.load();
 	Core.view.load();
 
-
-	var x = require( "./models/some_model");
-	new x();
-//	var resA = Core.api.service( 'service_a/file_a' );
-//	resA.then( console.log );
-
 	http.createServer( Core.app ).listen( config.port, function(){
-		console.log( 'Express server listening on port ' + config.port );
+		console.log( 'Server listening on port ' + config.port );
 	});
 });
 

@@ -1,0 +1,25 @@
+<%- param %>
+
+<div ng-app="docs">
+    <div ng-controller="docsCtrl as main">
+        <ul class="services">
+            <li ng-repeat="(path,doc) in main.docs" class="well">
+                <div class="well path" ng-click="doc.open = !doc.open">
+                    <span class="green">{{doc.httpMethod | uppercase }}</span> {{ path }}
+                </div>
+                <p>{{doc.summery}}</p>
+                <div ng-show="doc.open">
+                    <h4>Params:</h4>
+                    <ul class="params">
+                        <li ng-repeat="param in doc.parameters">
+                            <p>
+                                <span ng-show="param.required" class="required"></span>
+                                <b>{{param.name}}</b> ({{param.dataType}}) - {{param.description}}
+                            </p>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>

@@ -1,6 +1,5 @@
 
-var Path 		= require( 'path' ),
-	Passport	= require( 'passport' ),
+var Passport	= require( 'passport' ),
 	express 	= require( 'express' ),
 	ejs 		= require( 'ejs' ),
 	fs 			= require( 'fs' ),
