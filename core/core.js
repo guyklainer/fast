@@ -1,7 +1,8 @@
 
-var fs 			= require( 'fs'),
+var fs 			= require( 'fs' ),
 	express		= require( 'express' ),
-	path 		= require('path');
+	_			= require( 'underscore' ),
+	path 		= require('path' );
 
 
 // Static Class Core
@@ -17,9 +18,9 @@ function Core( dir ){
 	return Core.modules;
 }
 
-Core.load = function( callback ){
+Core.load = function( options, callback ){
 
-	Core.loadConfig();
+	Core.loadConfig( options );
 
 	fs.readdirSync( Core.modulesPath ).forEach( function ( corePath ){
 		if( corePath == "config" )
@@ -44,13 +45,15 @@ Core.load = function( callback ){
 		callback();
 };
 
-Core.loadConfig = function(){
+Core.loadConfig = function( options ){
 	var configPath = path.join( Core.modulesPath, "config" );
 
-	if( fs.existsSync( path.join( Core.modulesPath, "config" ) ) )
-		Core.modules.config = require( path.join( configPath, "config.main" ) );
+	if( fs.existsSync( path.join( Core.modulesPath, "config" ) ) ) {
 
-	else {
+		Core.modules.config = require(path.join(configPath, "config.main"));
+		_.extend( Core.modules.config.globals, options );
+
+	} else {
 		console.log( new Error( "Config is missing" ).stack );
 		process.exit(1);
 	}

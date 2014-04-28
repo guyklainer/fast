@@ -7,7 +7,6 @@ var Passport	= require( 'passport' ),
 	App 		= Core.app;
 
 // -- Global Settings
-module.exports.settings = require( './settings' );
 module.exports.globals  = require( './globals' );
 
 // -- Bootstrap The Application
@@ -40,7 +39,7 @@ module.exports.load = function(){
 	//pp.use(express.favicon( Path.join( static_root, 'img/favicon.ico' ) ) );
 
 	//Sessions
-	App.use(express.session( { secret: module.exports.settings.sessionSecret } ));
+	App.use(express.session( { secret: module.exports.globals.sessionSecret } ));
 
 	// -- Authentication
 	App.use(Passport.initialize());
