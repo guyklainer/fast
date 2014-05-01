@@ -1,9 +1,11 @@
-Fast
-=====
+Fast API
+========
 
-Create RESTFull API in seconds
+Create RESTFul API in seconds
 
 Example:
+app.js
+--------------
 <pre><code>
     var Fast    = require( 'fast' ),
         Path    = require('path' );
@@ -26,9 +28,9 @@ module.exports.routes = {
 		httpMethod 	: "get",
 		parameters 	:[
 			{
-				name 			: "username",
-				description 	: "User Name",
-				required 		: true,
+				name            : "username",
+				description     : "User Name",
+				required 	    : true,
 				dataType 		: "string",
 				allowMultiple 	: true,
 				paramType 		: "query"

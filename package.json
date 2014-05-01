@@ -1,14 +1,23 @@
 {
-  "name": "fast-api",
-  "version": "0.0.3",
+ 	"name": "fast-api",
+  	"version": "0.0.4",
+	"description": "Build RESTful APIs in seconds.",
 
-  "dependencies": {
-    "express": "3.4.0",
-    "passport": "~0.1.17",
-    "connect-assets": "~2.5.3",
-    "q": "~0.9.7",
-    "passport-local": "~0.1.6",
-    "underscore": "~1.5.2",
-    "colors": "^0.6.2"
-  }
+	"repository": {
+		"type": "git",
+		"url": "git@github.com:guyklainer/fast.git"
+	},
+
+	"author": "Guy Klainer",
+	"license": "MIT",
+
+  	"dependencies": {
+    	"express": "3.4.0",
+    	"passport": "~0.1.17",
+    	"connect-assets": "~2.5.3",
+    	"q": "~0.9.7",
+    	"passport-local": "~0.1.6",
+    	"underscore": "~1.5.2",
+    	"colors": "^0.6.2"
+  	}
 }
