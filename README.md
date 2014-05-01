@@ -80,9 +80,10 @@ module.exports.service = function( req, res ){
 };
 </code></pre>
 
-Then, go to http://YOUR-APP/api/myservice
+Then, go to <br>
+http://YOUR-APP/api/myservice<br>
 and........ Voila!
 
-NOTE..
-You can put your service in directory, "mydir", inside the api folder.
+NOTE..<br>
+You can put your service in directory, "mydir", inside the api folder.<br>
 Now your route will be Then, go to http://YOUR-APP/api/mydir/myservice
