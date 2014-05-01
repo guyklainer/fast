@@ -4,14 +4,14 @@ var http 		= require( "http" ),
 	color 		= require( "colors" ),
 	CoreModule 	= require( './core/core' );
 
+var coreLoaded 	= false;
+
 // Main Class
-var Rapid = function( options ){
+var Fast = function( options ){
 
 	Core = CoreModule( path.join( __dirname, "core" ) );
 
 	CoreModule.load( options || {}, function(){
-
-		var config = Core.config.globals;
 
 		Core.environment.load();
 		Core.config.load();
@@ -19,13 +19,33 @@ var Rapid = function( options ){
 		Core.api.load();
 		Core.view.load();
 
-		http.createServer( Core.app ).listen( config.port, function(){
-			console.log( 'Rapid is running...'.green );
-			console.log( 'Listening on port '.cyan + config.port.toString().cyan );
-		});
+		coreLoaded = true;
 	});
 
-	return Core;
+	return {
+		listen : listen
+	};
 };
 
-exports = module.exports = Rapid;
+var listen = function( port, callback ){
+	while( !coreLoaded ){}
+
+	if( typeof port == "function" || !port || isNaN( port ) ) {
+		callback 	= port;
+		port 		= Core.config.globals.port;
+
+	} else
+		Core.config.globals.port = port;
+
+	if( !callback ){
+		callback = function(){
+			console.log( 'Fast is running...'.green );
+			console.log( 'Listening on port '.cyan + port.toString().cyan );
+		}
+	}
+
+	http.createServer( Core.app ).listen( port, callback );
+};
+
+module.exports.createServer = Fast;
+module.exports.listen 		= listen;
