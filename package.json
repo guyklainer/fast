@@ -1,6 +1,6 @@
 {
  	"name": "fast-api",
-  	"version": "0.0.4",
+  	"version": "0.0.5",
 	"description": "Build RESTful APIs in seconds.",
 
 	"repository": {
@@ -9,6 +9,7 @@
 	},
 
 	"author": "Guy Klainer",
+
 	"license": "MIT",
 
   	"dependencies": {

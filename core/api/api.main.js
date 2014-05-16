@@ -1,10 +1,10 @@
 
 
 var fs 			= require( 'fs' ),
-	Q 			= require( 'q' ),
 	path		= require( 'path' ),
 	http 		= require( 'http' ),
 	API			= require( './api' ),
+
 	response 	= http.OutgoingMessage.prototype,
 	apiRoot		= Core.config.globals.apiRoot;
 
@@ -12,10 +12,8 @@ var fs 			= require( 'fs' ),
 //----------
 var prepareReqResOnjects = function(){
 
-	if( response.success || response.error ){
-		console.log( new Error( "possible conflict in response object" ).stack );
-		process.exit(1);
-	}
+	if( success in response || error in response )
+		Core.error( "possible conflict in response object", true );
 
 	response.success 	= success;
 	response.error 		= error;

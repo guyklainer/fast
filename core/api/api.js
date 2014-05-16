@@ -75,7 +75,10 @@ API.prototype.routeCallback = function( req, res, currRoute ){
 		params 		= currRoute.parameters,
 		service 	= currRoute.service;
 
-	var isAuthenticated = Core.auth.ensureAuthenticated( req, service, privileges ),
+	if( privileges )
+		privileges = privileges[service];
+
+	var isAuthenticated = Core.auth.ensureAuthenticated( req, privileges ),
 		isValidParams 	= this.validateParams( req, params );
 
 	if( isAuthenticated ){
@@ -124,15 +127,11 @@ API.prototype.validateRoute = function(){
 	var method 		= this.currRoute.httpMethod.toLowerCase(),
 		service 	= this.currRoute.service;
 
-	if( this.validMethods.indexOf( method ) == -1 ){
-		console.log( new Error( "invalid HTTP method " + method + " in " + this.location ).stack );
-		process.exit(1);
-	}
+	if( this.validMethods.indexOf( method ) == -1 )
+		Core.error( "invalid HTTP method " + method + " in " + this.location, true );
 
-	if( !this.module[ service ] ){
-		console.log( new Error( this.location + " is not exporting " + service ).stack );
-		process.exit(1);
-	}
+	if( !this.module[ service ] )
+		Core.error( this.location + " is not exporting " + service, true );
 };
 
 API.prototype.validateParams = function( req, params ){

@@ -2,12 +2,18 @@
 var http 		= require( "http" ),
 	path		= require( "path" ),
 	color 		= require( "colors" ),
+	Q			= require( "q" ),
 	CoreModule 	= require( './core/core' );
 
-var coreLoaded 	= false;
+var deferred 	= Q.defer(),
+	loadPromise = deferred.promise;
+
 
 // Main Class
 var Fast = function( options ){
+
+	console.log( '\n----------------------------'.yellow );
+	console.log( 'Preparing everything...'.yellow );
 
 	Core = CoreModule( path.join( __dirname, "core" ) );
 
@@ -19,7 +25,11 @@ var Fast = function( options ){
 		Core.api.load();
 		Core.view.load();
 
-		coreLoaded = true;
+		// Make Core object immutable
+		// Preventing malicious altering
+		CoreModule.lock();
+
+		deferred.resolve();
 	});
 
 	return {
@@ -28,23 +38,26 @@ var Fast = function( options ){
 };
 
 var listen = function( port, callback ){
-	while( !coreLoaded ){}
 
-	if( typeof port == "function" || !port || isNaN( port ) ) {
-		callback 	= port;
-		port 		= Core.config.globals.port;
+	loadPromise.then( function(){
 
-	} else
-		Core.config.globals.port = port;
+		if( typeof port == "function" || !port || isNaN( port ) ) {
+			callback 	= port;
+			port 		= Core.config.globals.port;
 
-	if( !callback ){
-		callback = function(){
-			console.log( 'Fast is running...'.green );
-			console.log( 'Listening on port '.cyan + port.toString().cyan );
+		} else
+			Core.config.globals.port = port;
+
+		if( !callback ){
+			callback = function(){
+				console.log( 'Success!'.green );
+				console.log( '\nFast is running on port '.cyan + port.toString().cyan );
+				console.log( '----------------------------\n'.yellow );
+			}
 		}
-	}
 
-	http.createServer( Core.app ).listen( port, callback );
+		http.createServer( Core.app ).listen( port, callback );
+	});
 };
 
 module.exports.createServer = Fast;

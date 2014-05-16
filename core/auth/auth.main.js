@@ -21,8 +21,8 @@ function loadLoginRoutes(){
 		successRedirect	: '/',
 		failureRedirect	: '/'
 	};
-	App.post( '/login', Passport.authenticate( 'local', passportRoute ), login );
 
+	App.post( '/login', Passport.authenticate( 'local', passportRoute ), login );
 
 	App.get( '/',  function( req, res, next ){
 		if( req.isAuthenticated() )
@@ -74,34 +74,30 @@ module.exports.load = function(){
 	));
 };
 
-module.exports.ensureAuthenticated = function( req, service, privileges ){
+module.exports.ensureAuthenticated = function( req, privileges ){
 	return true;
-	var allow = true;
-
-	if( req.isAuthenticated() ){
-
-		if( privileges && privileges[ service ] ){
-			var userRole = req.user.role || 0;
-
-			if( userRole < privileges[ service ] )
-				allow = false;
-		}
-
-	}
-
-	else
-		allow = false;
+	var allow = req.isAuthenticated();
 
 	// In View Router, so params received are ( req, res, next )
-	if( service.hasOwnProperty( "end" ) && typeof( privileges ) == "function" ){
-		var res 	= service;
-		var next 	= privileges;
+	if( arguments.length == 3 ){
+
+		var res 	= arguments[1],
+			next 	= arguments[2];
 
 		if( allow )
 			next();
 		else
 			res.send( "401", "Unauthorized" );
 
-	} else
+	} else {
+
+		if( !isNaN( privileges ) && allow ){
+			var userRole = req.user.role || 0;
+
+			allow = !isNaN( userRole ) && userRole >= privileges;
+
+		}
+
 		return allow;
+	}
 };

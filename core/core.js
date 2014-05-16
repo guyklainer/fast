@@ -4,6 +4,7 @@ var fs 			= require( 'fs' ),
 	_			= require( 'underscore' ),
 	path 		= require('path' );
 
+var data = {};
 
 // Static Class Core
 //----------
@@ -12,11 +13,22 @@ function Core( dir ){
 	Core.modulesPath = dir;
 
 	Core.modules = {
-		app	: express()
+		app		: express(),
+		error	: error
 	};
 
 	return Core.modules;
 }
+
+Core.lock = function(){
+
+	for( var key in Core.modules )
+		if( Core.modules.hasOwnProperty( key ) )
+			Object.freeze( Core.modules[key] );
+
+	Object.freeze( Core.modules );
+
+};
 
 Core.load = function( options, callback ){
 
@@ -34,10 +46,8 @@ Core.load = function( options, callback ){
 			if( fs.existsSync( mainFile + ".js" ) )
 				Core.modules[corePath] = require( mainFile );
 
-			else {
-				console.log( new Error( mainFile + ".js is missing" ).stack );
-				process.exit(1);
-			}
+			else
+				Core.error( mainFile + ".js is missing", true );
 		}
 	});
 
@@ -48,16 +58,21 @@ Core.load = function( options, callback ){
 Core.loadConfig = function( options ){
 	var configPath = path.join( Core.modulesPath, "config" );
 
-	if( fs.existsSync( path.join( Core.modulesPath, "config" ) ) ) {
+	if( fs.existsSync( configPath ) ) {
 
-		Core.modules.config = require(path.join(configPath, "config.main"));
+		Core.modules.config = require( path.join( configPath, "config.main" ) );
 		_.extend( Core.modules.config.globals, options );
 
-	} else {
-		console.log( new Error( "Config is missing" ).stack );
-		process.exit(1);
-	}
+	} else
+		error( "Config is missing", true );
 
+};
+
+var error = function( msg, fatal ){
+	console.log( new Error( msg.toString().red ).stack.red );
+
+	if( fatal )
+		process.exit(1);
 };
 
 module.exports = Core;
