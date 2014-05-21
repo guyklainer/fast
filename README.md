@@ -23,7 +23,7 @@ Fast has built on top of Express so you more then welcome to fork on github and 
 Example:
 app.js
 --------------
-<pre><code>
+
     var Fast    = require( 'fast' ),
         Path    = require('path' );
 
@@ -32,70 +32,70 @@ app.js
     });
 
     app.listen( "4000" );
-</code></pre>
+
 
 Then, in the api folder, you can have this file:
 
 myservice.js
 --------------
-<pre><code>
-module.exports.routes = {
-	"/"  	: {
-		summery 	: "Get list",
-		httpMethod 	: "get",
-		parameters 	:[
-			{
-				name            : "username",
-				description     : "User Name",
-				required 	    : true,
-				dataType 		: "string",
-				allowMultiple 	: true,
-				paramType 		: "query"
-			},
-			{
-				name 			: "id",
-				description 	: "User ID",
-				required 		: false,
-				dataType 		: "number",
-				allowMultiple 	: false,
-				paramType 		: "path"
-			}
-		],
+    module.exports.routes = {
+        "/"  	: {
+            summery 	: "Get list",
+            httpMethod 	: "get",
+            parameters 	:[
+                {
+                    name            : "username",
+                    description     : "User Name",
+                    required 	    : true,
+                    dataType 		: "string",
+                    allowMultiple 	: true,
+                    paramType 		: "query"
+                },
+                {
+                    name 			: "id",
+                    description 	: "User ID",
+                    required 		: false,
+                    dataType 		: "number",
+                    allowMultiple 	: false,
+                    paramType 		: "path"
+                }
+            ],
+    
+            service 	: "service"
+        },
+    
+        "/:id" 	: {
+            summery 	: "Get list by ID",
+            httpMethod 	: "get",
+            parameters	: [
+                {
+                    name            : "id",
+                    description     : "User ID",
+                    required        : true,
+                    dataType        : "number",
+                    allowMultiple   : false,
+                    paramType       : "path"
+                }
+            ],
+    
+            service 	: "getByID"
+        }
+    };
+    
+    module.exports.privileges = {
+        "service" : 0,
+        "getByID" : 1
+    };
+    
+    module.exports.getByID = function( req, res ){
+        console.log( req.params.id );
+    };
+    
+    module.exports.service = function( req, res ){
+        res.success( "done" );
+    };
 
-		service 	: "service"
-	},
-
-	"/:id" 	: {
-		summery 	: "Get list by ID",
-		httpMethod 	: "get",
-		parameters	: [
-			{
-			    name            : "id",
-			    description     : "User ID",
-			    required        : true,
-			    dataType        : "number",
-			    allowMultiple   : false,
-			    paramType       : "path"
-			}
-		],
-
-		service 	: "getByID"
-	}
-};
-
-module.exports.privileges = {
-	"service" : 0,
-	"getByID" : 1
-};
-
-module.exports.getByID = function( req, res ){
-	console.log( req.params.id );
-};
-
-module.exports.service = function( req, res ){
-	res.success( "done" );
-};
-</code></pre><br>
+<br>
 
 Go to <br>
 http://YOUR-APP/api/myservice<br><br>
@@ -103,19 +103,16 @@ and........ Voila!<br><br>
 
 Available options for createServer method and defaults
 --------------
-<pre><code>
-{
-    apiURIPrefix	: "/api",
-    apiDocsPath		: "docs",
-    exposeDocs		: true
-}
-</code></pre><br><br>
+    {
+        apiURIPrefix	: "/api",
+        apiDocsPath		: "docs",
+        exposeDocs		: true
+    }
+<br>
 
 The listen method accept 2 parameters, both are optional:<br>
 
-<pre><code>
-app.listen( port, callback );
-</code></pre><br>
+    app.listen( port, callback );
 
 The default port is 3000.
 The callback gets no params and invoked when Fast finisg the init phase and ready for requests.. 
