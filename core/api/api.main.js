@@ -3,7 +3,7 @@
 var fs 			= require( 'fs' ),
 	path		= require( 'path' ),
 	http 		= require( 'http' ),
-	API			= require( './api' ),
+	API			= require( './api'),
 
 	response 	= http.OutgoingMessage.prototype,
 	apiRoot		= Core.config.globals.apiRoot;
@@ -83,3 +83,5 @@ module.exports.load = function(){
 
 	loadAPI();
 };
+
+module.exports.services = API.getServices();

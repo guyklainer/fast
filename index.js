@@ -25,6 +25,8 @@ var Fast = function( options ){
 		Core.api.load();
 		Core.view.load();
 
+		Core.api = Core.api.services;
+
 		// Make Core object immutable
 		// Preventing malicious altering
 		CoreModule.lock();

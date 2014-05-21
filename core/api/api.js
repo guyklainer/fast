@@ -5,6 +5,7 @@ var App 		= Core.app,
 	apiRoot		= Core.config.globals.apiRoot,
 	apiPrefix	= Core.config.globals.apiURIPrefix;
 
+
 // Class API
 //----------
 function API( location ){
@@ -17,12 +18,17 @@ function API( location ){
 	this.create();
 }
 
-// Static member
-API.apiDocs = {};
+// Static members
+API.apiDocs 	= {};
+API.services 	= {};
 
-// Static method
+// Static methods
 API.getDocs = function(){
 	return API.apiDocs;
+};
+
+API.getServices = function(){
+	return API.services;
 };
 
 // Methods
@@ -53,7 +59,7 @@ API.prototype.add = function( key, route ){
 
 	//Expose as service
 	if( key == "/" )
-		this.addService( routhPath );
+		this.addService( routhPath, route.service );
 
 	//Add to API Docs
 	API.apiDocs[ routhPath ] = route;
@@ -87,9 +93,13 @@ API.prototype.routeCallback = function( req, res, currRoute ){
 
 			res.deferred = Q.defer();
 
+			var request = { params : req.params, body : req.body, query : req.query };
+
 			this.module[ service ]( req, res );
 
 			res.deferred.promise.then( function( data ){
+
+				data.request = request;
 				res.json( data );
 			});
 
@@ -100,11 +110,11 @@ API.prototype.routeCallback = function( req, res, currRoute ){
 		res.error( "Unauthorized", "401" );
 };
 
-API.prototype.addService = function( routePath ){
+API.prototype.addService = function( routePath, service ){
 
 	var splitedPath 	= routePath.split( path.sep ),
 		lastPath 		= splitedPath.slice( -1 ),
-		exportsPointer	= module.exports;
+		servicesPointer	= API.services;
 
 	// remove extension
 	splitedPath = splitedPath.slice( 2, -1 );
@@ -113,13 +123,13 @@ API.prototype.addService = function( routePath ){
 		if( !splitedPath.hasOwnProperty( i ) )
 			continue;
 
-		if( !exportsPointer[ splitedPath[i] ] )
-			exportsPointer[ splitedPath[i] ] = {};
+		if( !servicesPointer[ splitedPath[i] ] )
+			servicesPointer[ splitedPath[i] ] = {};
 
-		exportsPointer = exportsPointer[ splitedPath[i]];
+		servicesPointer = servicesPointer[ splitedPath[i]];
 	}
 
-	exportsPointer[lastPath] = this.module;
+	servicesPointer[lastPath] = this.module[service];
 };
 
 API.prototype.validateRoute = function(){

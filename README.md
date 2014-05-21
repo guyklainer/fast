@@ -1,7 +1,24 @@
 Fast API
 ========
 
-Create RESTFul API in seconds
+Create RESTful API in seconds.
+
+With Fast, you don't have to define routes for each service in your API.<br>
+Just put your service in your API folder, and the path to the service will be his access point.<br>
+You can also nest folders, Fast will handle it.
+
+Each module should exports 'routes' object which defines the services in this module. <br>
+
+In the example below the module 'myservice.js' expose 2 GET services:
+ - http://YOUR-APP/api/myservice/
+ - http://YOUR-APP/api/myservice/:id
+
+For each service you need to define his params.
+Only this params with this settings will be valid for this service.
+
+Fast has built on top of Express so you more then welcome to fork on github and start hack it.
+
+
 
 Example:
 app.js
@@ -78,12 +95,28 @@ module.exports.getByID = function( req, res ){
 module.exports.service = function( req, res ){
 	res.success( "done" );
 };
-</code></pre>
+</code></pre><br>
 
-Then, go to <br>
-http://YOUR-APP/api/myservice<br>
-and........ Voila!
+Go to <br>
+http://YOUR-APP/api/myservice<br><br>
+and........ Voila!<br><br>
 
-NOTE..<br>
-You can put your service in directory, "mydir", inside the api folder.<br>
-Now your route will be Then, go to http://YOUR-APP/api/mydir/myservice
+Available options for createServer method and defaults
+--------------
+<pre><code>
+{
+    apiURIPrefix	: "/api",
+    apiDocsPath		: "docs",
+    exposeDocs		: true
+}
+</code></pre><br><br>
+
+The listen method accept 2 parameters, both are optional:<br>
+
+<pre><code>
+app.listen( port, callback );
+</code></pre><br>
+
+The default port is 3000.
+The callback gets no params and invoked when Fast finisg the init phase and ready for requests.. 
+
