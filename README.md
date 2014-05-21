@@ -28,16 +28,16 @@ You have access to the underscore utility module from:
     Core.utils
    
 
-Fast has built on top of Express so you more then welcome to fork on github and start hack it.
+Fast has built on top of Express so you are more then welcome to fork on github and start hacking.
 
 
 Install
 ------------
     npm install fast-api
-
-**Example:**
-app.js
---------------
+    
+Example:
+----------
+**app.js**
 
     var Fast    = require( 'fast' ),
         Path    = require('path' );
@@ -51,8 +51,8 @@ app.js
 
 Then, in the api folder, you can have this file:
 
-myservice.js
---------------
+**myservice.js**
+
     module.exports.routes = {
         "/"  	: {
             summery 	: "Get list",
@@ -110,11 +110,9 @@ myservice.js
         res.success( "done" );
     };
 
-<br>
 
-Go to <br>
-http://YOUR-APP/api/myservice<br><br>
-and........ Voila!<br><br>
+Go to http://YOUR-APP/api/myservice<br><br>
+**and........ Voila!**
 
 Available options for createServer method and defaults
 --------------
@@ -123,7 +121,6 @@ Available options for createServer method and defaults
         apiDocsPath		: "docs",
         exposeDocs		: true
     }
-<br>
 
 The listen method accept 2 parameters, both are optional:<br>
 
