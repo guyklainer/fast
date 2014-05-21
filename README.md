@@ -19,8 +19,11 @@ Only this params with this settings will be valid for this service.
 Fast has built on top of Express so you more then welcome to fork on github and start hack it.
 
 
+Install
+------------
+    npm install fast-api
 
-Example:
+**Example:**
 app.js
 --------------
 
@@ -114,6 +117,6 @@ The listen method accept 2 parameters, both are optional:<br>
 
     app.listen( port, callback );
 
-The default port is 3000.
+The default port is 3000.<br>
 The callback gets no params and invoked when Fast finisg the init phase and ready for requests.. 
 
