@@ -6,6 +6,7 @@ module.exports = {
 	siteName      	: 'SITENAME',
 	sessionSecret 	: 'SOME_SECRET',
 	port          	: process.env.PORT || 3000,
+	logsPath 		: path.join( root, 'logs/node.log' ),
 	environment		: process.env.NODE_ENV || 'development',
 	debug        	: 0,
 	layout 			: path.join( "interface", "layout" ),

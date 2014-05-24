@@ -8,7 +8,7 @@ module.exports.load = function( app ) {
 
 	app.use( morgan({
 		format : 'tiny',
-		stream : fs.createWriteStream('../../logs/node.log')
+		stream : fs.createWriteStream( Core.config.globals.logsPath )
 	}));
 
 	var duration = 2592000000; // One month
