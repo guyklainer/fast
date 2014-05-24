@@ -6,6 +6,7 @@ var Passport		= require( 'passport' ),
 	path 			= require( 'path' ),
 	cookieParser 	= require( 'cookie-parser' ),
 	session      	= require( 'express-session' ),
+	RedisStore 		= require( 'connect-redis' ),
 	methodOverride 	= require( 'method-override'),
 	bodyParser 		= require( 'body-parser' ),
 	favicon 		= require( 'serve-favicon' ),
@@ -41,7 +42,14 @@ module.exports.load = function(){
 	//App.use( favicon( Path.join( static_root, 'img/favicon.ico' ) ) );
 
 	//Sessions
-	App.use( session( { secret: module.exports.globals.sessionSecret, name : 'sid', cookie: { secure: true } } ) );
+	RedisStore = RedisStore( session );
+
+	App.use( session({
+		secret 	: module.exports.globals.sessionSecret,
+		name 	: 'sid',
+		cookie	: { secure: true },
+		store	: new RedisStore()
+	}));
 
 	// -- Authentication
 	App.use( Passport.initialize() );
