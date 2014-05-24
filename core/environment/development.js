@@ -1,17 +1,54 @@
 
-var connectAssets   = require('connect-assets');
+var traceback 	= require( 'traceback' ),
+	http 		= require( 'http' ),
+	morgan  	= require( 'morgan' );
 
-module.exports = function( app, express ) {
+module.exports.load = function( app ) {
 
-	app.use(express.logger('dev'));
+	app.use( morgan( 'dev') );
 
-	//Enable dependency based asset loading
-	app.use(connectAssets({
-		src : __dirname + "/../public"
-	}));
+	app.use( require( 'errorhandler' )() );
+};
 
-	app.use(express.errorHandler({
-		dumpExceptions: true,
-		showStack: true
-	}));
+module.exports.error = function( data, code ){
+	var stack = traceback(),
+		trace = {};
+
+	for( var index = 0; index < 5; index ++ ){
+		var item 	= stack[index],
+			params 	= [];
+
+		for (var key in item.fun.arguments)
+			if (item.fun.arguments.hasOwnProperty(key))
+
+				try {
+					JSON.stringify( item.fun.arguments[key] );
+					params.push( item.fun.arguments[key] );
+				} catch (e) {
+					params.push( "Unable to print param" );
+				}
+
+		trace[ (index+1) + ") " + item.file ] = {
+			path	: item.path.replace(Core.config.globals.root, ""),
+			method	: item.name,
+			line	: item.line,
+			params	: params
+		};
+	}
+
+	var result = {
+		status  : 0,
+		content : [],
+		errors 	: data,
+		stack 	: trace
+	};
+
+	if( this instanceof http.OutgoingMessage ){
+
+		result.request = { params : this.req.params, body : this.req.body, query : this.req.query };
+
+		this.json( code || "500", result );
+
+	} else
+		return result;
 };

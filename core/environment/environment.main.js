@@ -1,16 +1,25 @@
-var express = require( 'express' );
+
+var development	= require("./development"),
+	production 	= require("./production");
 
 module.exports.load = function() {
 
-	var env = Core.app.settings.env;
+	var env = Core.config.globals.environment;
 
-	// -- DEVELOPMENT
-	if ('development' == env) {
-		require("./development")( Core.app, express );
+	switch( env ){
+		case "development":
+			env = development;
+			break;
+
+		case "production":
+			env = production;
+			break;
+
+		default :
+			Core.error( "Missing environment variable", true );
+			break;
 	}
 
-	// -- PRODUCTION
-	if ('production' == env) {
-		require("./production")( Core.app, express );
-	}
+	env.load( Core.app );
+	module.exports.error = env.error;
 };

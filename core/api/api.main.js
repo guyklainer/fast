@@ -12,11 +12,11 @@ var fs 			= require( 'fs' ),
 //----------
 var prepareReqResOnjects = function(){
 
-	if( success in response || error in response )
+	if( response.success || response.error )
 		Core.error( "possible conflict in response object", true );
 
 	response.success 	= success;
-	response.error 		= error;
+	response.error 		= Core.environment.error;
 };
 
 var success = function( data ){
@@ -29,20 +29,6 @@ var success = function( data ){
 
 	if( this instanceof http.OutgoingMessage && this.deferred )
 		this.deferred.resolve( result );
-
-	else
-		return result;
-};
-
-var error = function( data, code ){
-	var result = {
-		status  : 0,
-		content : [],
-		errors 	: data
-	};
-
-	if( this instanceof http.OutgoingMessage )
-		this.json( code || "500", result );
 
 	else
 		return result;

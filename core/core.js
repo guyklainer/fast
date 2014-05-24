@@ -4,8 +4,6 @@ var fs 			= require( 'fs' ),
 	_			= require( 'underscore' ),
 	path 		= require('path' );
 
-var data = {};
-
 // Static Class Core
 //----------
 function Core( dir ){

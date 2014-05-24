@@ -15,7 +15,9 @@ function API( location ){
 	this.module			= require( this.location ) || false;
 	this.validMethods	= [ 'get', 'post', 'put', 'delete' ];
 
-	this.create();
+	this.createRoutes();
+	//this.create500();
+	this.create404();
 }
 
 // Static members
@@ -32,7 +34,7 @@ API.getServices = function(){
 };
 
 // Methods
-API.prototype.create = function(){
+API.prototype.createRoutes = function(){
 
 	if( !this.module )
 		return;
@@ -42,6 +44,27 @@ API.prototype.create = function(){
 	for( var key in routes )
 		if( routes.hasOwnProperty( key ) )
 			this.add( key, routes[ key ] );
+};
+
+API.prototype.create500 = function(){
+	App.use(function(err, req, res, next) {
+		console.log( "500", err );
+		res.render('500', {
+			status: err.status || 500,
+			error: err
+		});
+	});
+};
+
+API.prototype.create404 = function(){
+	App.use(function(req, res, next) {
+		console.log( "404", req.url );
+		res.end( "Not Found" );
+//		res.render('404', {
+//			status: 404,
+//			url: req.url
+//		});
+	});
 };
 
 API.prototype.add = function( key, route ){
@@ -93,13 +116,11 @@ API.prototype.routeCallback = function( req, res, currRoute ){
 
 			res.deferred = Q.defer();
 
-			var request = { params : req.params, body : req.body, query : req.query };
-
 			this.module[ service ]( req, res );
 
 			res.deferred.promise.then( function( data ){
 
-				data.request = request;
+				data.request = { params : res.req.params, body : res.req.body, query : res.req.query };
 				res.json( data );
 			});
 
