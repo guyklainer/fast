@@ -1,6 +1,7 @@
 
 var Passport		= require( 'passport' ),
 	express 		= require( 'express' ),
+	expressSSL 		= require( 'express-enforces-ssl' ),
 	ejs 			= require( 'ejs' ),
 	fs 				= require( 'fs' ),
 	path 			= require( 'path' ),
@@ -29,6 +30,11 @@ module.exports.load = function(){
 	App.use( bodyParser() );
 	App.use( methodOverride() );
 
+	// -- Enforces SSL
+	if( Core.config.globals.useSSL ) {
+		App.enable('trust proxy');
+		App.use(expressSSL());
+	}
 
 	// -- Static ressources
 	fs.readdirSync( Core.config.globals.viewRoot ).forEach( function ( view ){

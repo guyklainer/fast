@@ -58,7 +58,14 @@ var listen = function( port, callback ){
 			}
 		}
 
-		http.createServer( Core.app ).listen( port, callback );
+		if( Core.config.globals.useSSL ){
+			if( Core.config.globals.SSLKeys && Core.config.globals.SSLKeys.key && Core.config.globals.SSLKeys.cert )
+				https.createServer( Core.config.globals.SSLKeys, Core.app ).listen( port, callback );
+			else
+				Core.error( "SSL keys are missing", true );
+
+		} else
+			http.createServer( Core.app ).listen( port, callback );
 	});
 };
 

@@ -58,6 +58,26 @@ var loadDocs = function(){
 	});
 };
 
+var loadErrorRoutes = function(){
+
+	Core.app.use(function(err, req, res, next) {
+		console.log( "500", err );
+		res.render('500', {
+			status: err.status || 500,
+			error: err
+		});
+	});
+
+	Core.app.use(function(req, res, next) {
+		console.log( "404", req.url );
+		res.end( "Not Found" );
+//		res.render('404', {
+//			status: 404,
+//			url: req.url
+//		});
+	});
+};
+
 // Public
 //----------
 module.exports.load = function(){
@@ -68,6 +88,8 @@ module.exports.load = function(){
 		loadDocs();
 
 	loadAPI();
+
+	loadErrorRoutes();
 };
 
 module.exports.services = API.getServices();

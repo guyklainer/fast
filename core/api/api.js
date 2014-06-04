@@ -15,9 +15,7 @@ function API( location ){
 	this.module			= require( this.location ) || false;
 	this.validMethods	= [ 'get', 'post', 'put', 'delete' ];
 
-	this.createRoutes();
-	//this.create500();
-	this.create404();
+	this.create();
 }
 
 // Static members
@@ -34,7 +32,7 @@ API.getServices = function(){
 };
 
 // Methods
-API.prototype.createRoutes = function(){
+API.prototype.create = function(){
 
 	if( !this.module )
 		return;
@@ -44,27 +42,6 @@ API.prototype.createRoutes = function(){
 	for( var key in routes )
 		if( routes.hasOwnProperty( key ) )
 			this.add( key, routes[ key ] );
-};
-
-API.prototype.create500 = function(){
-	App.use(function(err, req, res, next) {
-		console.log( "500", err );
-		res.render('500', {
-			status: err.status || 500,
-			error: err
-		});
-	});
-};
-
-API.prototype.create404 = function(){
-	App.use(function(req, res, next) {
-		console.log( "404", req.url );
-		res.end( "Not Found" );
-//		res.render('404', {
-//			status: 404,
-//			url: req.url
-//		});
-	});
 };
 
 API.prototype.add = function( key, route ){
