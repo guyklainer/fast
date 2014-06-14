@@ -37,13 +37,14 @@ module.exports.load = function(){
 	}
 
 	// -- Static ressources
-	fs.readdirSync( Core.config.globals.viewRoot ).forEach( function ( view ){
-		var route 			= path.join( view, Core.config.globals.publicFolder ),
-			publicFolder 	= path.join( Core.config.globals.viewRoot, route );
+	if( fs.existsSync( Core.config.globals.viewRoot ) )
+		fs.readdirSync( Core.config.globals.viewRoot ).forEach( function ( view ){
+			var route 			= path.join( view, Core.config.globals.publicFolder ),
+				publicFolder 	= path.join( Core.config.globals.viewRoot, route );
 
-		if( fs.existsSync( publicFolder ) )
-			App.use( "/" + route, express.static( publicFolder ) );
-	});
+			if( fs.existsSync( publicFolder ) )
+				App.use( "/" + route, express.static( publicFolder ) );
+		});
 
 	//App.use( favicon( Path.join( static_root, 'img/favicon.ico' ) ) );
 

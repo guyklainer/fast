@@ -54,6 +54,7 @@ var listen = function( port, callback ){
 			callback = function(){
 				console.log( 'Success!'.green );
 				console.log( '\nFast is running on port '.cyan + port.toString().cyan );
+				console.log( '\nAPI root folder path is '.cyan + Core.config.globals.apiRoot.cyan );
 				console.log( '----------------------------\n'.yellow );
 			}
 		}

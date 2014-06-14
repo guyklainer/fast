@@ -14,6 +14,9 @@ module.exports.load = function( location ){
 
 	var root = location ? location : viewRoot;
 
+	if( !fs.existsSync( root ) )
+		return;
+
 	fs.readdirSync( root ).forEach( function ( view ){
 
 		if( viewsToSkip.indexOf( view ) != -1 )
