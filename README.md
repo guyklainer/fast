@@ -39,7 +39,7 @@ Example:
 ----------
 **app.js**
 
-    var Fast    = require( 'fast' ),
+    var Fast    = require( 'fast-api' ),
         Path    = require('path' );
 
     var app = Fast.createServer({

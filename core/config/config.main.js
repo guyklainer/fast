@@ -2,7 +2,6 @@
 var Passport		= require( 'passport' ),
 	express 		= require( 'express' ),
 	expressSSL 		= require( 'express-enforces-ssl' ),
-	ejs 			= require( 'ejs' ),
 	fs 				= require( 'fs' ),
 	path 			= require( 'path' ),
 	cookieParser 	= require( 'cookie-parser' ),
@@ -20,8 +19,10 @@ module.exports.globals  = require( './globals' );
 module.exports.load = function(){
 
 	// -- Define view engine with its options
-	App.set('views', Core.config.globals.viewRoot );
-	App.set('view engine', 'ejs');
+	if( fs.existsSync( Core.config.globals.viewRoot ) ) {
+		App.set('views', Core.config.globals.viewRoot);
+		App.set('view engine', 'ejs');
+	}
 
 	// -- Set uncompressed html output and disable layout templating
 	App.locals.pretty = true;
