@@ -8,6 +8,9 @@ var fs 			= require( 'fs' ),
 	response 	= http.OutgoingMessage.prototype,
 	apiRoot		= Core.config.globals.apiRoot;
 
+if( !fs.existsSync( apiRoot ) )
+	Core.error( "API folder is missing at " + apiRoot, true );
+
 // Private
 //----------
 var prepareReqResOnjects = function(){

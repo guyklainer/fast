@@ -3,6 +3,7 @@ var http 		= require( "http" ),
 	path		= require( "path" ),
 	color 		= require( "colors" ),
 	Q			= require( "q" ),
+	fs			= require( "fs" ),
 	CoreModule 	= require( './core/core' );
 
 var deferred 	= Q.defer(),
@@ -23,7 +24,9 @@ var Fast = function( options ){
 		Core.config.load();
 		Core.auth.load();
 		Core.api.load();
-		Core.view.load();
+
+		if( fs.existsSync( Core.config.globals.viewRoot ) )
+			Core.view.load();
 
 		Core.api = Core.api.services;
 

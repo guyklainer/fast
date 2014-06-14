@@ -1,6 +1,6 @@
 
 var path = require( 'path'),
-	root = path.join( __dirname, '..', '..' );
+	root = path.dirname( require.main.filename );
 
 module.exports = {
 	siteName      	: 'SITENAME',

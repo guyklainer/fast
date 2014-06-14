@@ -1,11 +1,13 @@
 
 var fs			= require( 'fs' ),
-	ejs			= require( 'ejs' ),
 	path		= require( 'path'),
 	App			= Core.app,
 	Headers		= Core.headers,
 	indexFile 	= "ui/index.ejs",
 	viewRoot	= Core.config.globals.viewRoot;
+
+if( fs.existsSync( viewRoot ) )
+	var ejs	= require( 'ejs' );
 
 // Class View
 //--------------
