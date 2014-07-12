@@ -28,7 +28,10 @@ module.exports.load = function(){
 	App.locals.pretty = true;
 
 	App.use( cookieParser() );
-	App.use( bodyParser() );
+	App.use( bodyParser.urlencoded({
+		extended: true
+	}));
+	App.use( bodyParser.json() );
 	App.use( methodOverride() );
 
 	// -- Enforces SSL
