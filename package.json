@@ -1,6 +1,6 @@
 {
   "name": "fast-api",
-  "version": "0.1.12",
+  "version": "0.1.13",
   "description": "Build RESTful APIs in seconds.",
   "repository": {
     "type": "git",

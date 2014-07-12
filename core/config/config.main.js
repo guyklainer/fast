@@ -56,10 +56,12 @@ module.exports.load = function(){
 	RedisStore = RedisStore( session );
 
 	App.use( session({
-		secret 	: module.exports.globals.sessionSecret,
-		name 	: 'sid',
-		cookie	: { secure: true },
-		store	: new RedisStore()
+		secret 				: module.exports.globals.sessionSecret,
+		name 				: 'sid',
+		saveUninitialized	: true,
+		resave				: true,
+		cookie				: { secure: true },
+		store				: new RedisStore()
 	}));
 
 	// -- Authentication
