@@ -44,6 +44,9 @@ var Fast = function( options ){
 
 var listen = function( port, callback ){
 
+	var server,
+		io;
+
 	loadPromise.then( function(){
 
 		if( typeof port == "function" || !port || isNaN( port ) ) {
@@ -64,12 +67,23 @@ var listen = function( port, callback ){
 
 		if( Core.config.globals.useSSL ){
 			if( Core.config.globals.SSLKeys && Core.config.globals.SSLKeys.key && Core.config.globals.SSLKeys.cert )
-				https.createServer( Core.config.globals.SSLKeys, Core.app ).listen( port, callback );
+				server = https.createServer( Core.config.globals.SSLKeys, Core.app );
 			else
 				Core.error( "SSL keys are missing", true );
 
-		} else
-			http.createServer( Core.app ).listen( port, callback );
+		} else {
+			server = http.createServer( Core.app );
+		}
+
+		if( server ){
+			if( Core.config.globals.enableWebSocket && Core.config.globals.webSocketConnectionCallback ){
+				io = require('socket.io').listen( server, { log: Core.config.globals.environment != "production" } );
+
+				Core.socket( Core.config.globals.webSocketConnectionCallback );
+			}
+
+			server.listen( port, callback );
+		}
 	});
 };
 
