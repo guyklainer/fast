@@ -4,7 +4,8 @@ var http 		= require( "http" ),
 	color 		= require( "colors" ),
 	Q			= require( "q" ),
 	fs			= require( "fs" ),
-	CoreModule 	= require( './core/core' );
+	socketIO 	= require( "socket.io" ),
+	CoreModule 	= require( "./core/core" );
 
 var deferred 	= Q.defer(),
 	loadPromise = deferred.promise;
@@ -77,9 +78,9 @@ var listen = function( port, callback ){
 
 		if( server ){
 			if( Core.config.globals.enableWebSocket && Core.config.globals.webSocketConnectionCallback ){
-				io = require('socket.io').listen( server, { log: Core.config.globals.environment != "production" } );
+				io = socketIO.listen( server, { log: Core.config.globals.environment != "production" } );
 
-				Core.socket( Core.config.globals.webSocketConnectionCallback );
+				Core.socket( io, Core.config.globals.webSocketConnectionCallback );
 			}
 
 			server.listen( port, callback );
