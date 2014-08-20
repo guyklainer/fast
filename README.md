@@ -117,9 +117,12 @@ Go to http://YOUR-APP/api/myservice<br><br>
 Available options for createServer method and defaults
 --------------
     {
-        apiURIPrefix	: "/api",
-        apiDocsPath		: "docs",
-        exposeDocs		: true
+        apiURIPrefix	            : "/api",
+        apiDocsPath		            : "docs",
+        exposeDocs		            : true,
+        enableWebSocket	            : false,
+        webSocketConnectionCallback	: false,
+        
     }
 
 The listen method accept 2 parameters, both are optional:<br>
@@ -128,4 +131,30 @@ The listen method accept 2 parameters, both are optional:<br>
 
 The default port is 3000.<br>
 The callback gets no params and invoked when Fast finisg the init phase and ready for requests.. 
+
+
+Socket.io:
+----------
+To enable socket.io support, add this to the createServer options:
+    
+    enableWebSocket	            : true,
+    webSocketConnectionCallback	: function( socket ){
+        //your code
+    }
+
+webSocketConnectionCallback is the callback that invoked after new connection. 
+You will get the new socket as the first parameter.
+
+SSL:
+----------
+To enable SSL, add this to the createServer options:
+    
+    useSSL : true
+    useSSL : {
+        key   : YOUR_KEY,
+        cert  : YOUR_CERT
+    }
+
+
+
 

@@ -5,15 +5,16 @@ var fs 			= require( 'fs' ),
 	path 		= require('path' );
 
 // Static Class Core
-//----------
+//------------------
 function Core( dir ){
 
 	Core.modulesPath = dir;
 
-	Core.modules = {
-		app		: express(),
-		error	: error
-	};
+	if( !Core.modules )
+		Core.modules = {
+			app		: express(),
+			error	: error
+		};
 
 	return Core.modules;
 }
