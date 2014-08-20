@@ -13,6 +13,17 @@ In the example below the module 'myservice.js' expose 2 GET services:
  - http://YOUR-APP/api/myservice/
  - http://YOUR-APP/api/myservice/:id
 
+Inside your service, 'Core' object is available.
+
+If you want to use one of your services in other module, just expose the service with the name 'service' like the second service in myservice.js file.<br>
+Then, call it from other modules like this:<br>
+    
+    var result = Core.api.myservice();
+
+You have access to the underscore utility module from:
+    
+    Core.utils
+
 You can change the default '/api' path for your API folder.
 Just add this to the createServer options:
     
@@ -35,19 +46,6 @@ and the path will be:
 To disable the documentation feature, add this to createServer options:
     
     exposeDocs : false
-
-
-Inside your service, 'Core' object is available.
-
-If you want to use one of your services in other module, just expose the service with the name 'service' like the second service in myservice.js file.<br>
-Then, call it from other modules like this:<br>
-    
-    var result = Core.api.myservice();
-
-You have access to the underscore utility module from:
-    
-    Core.utils
-   
 
 Fast has built on top of Express so you are more then welcome to fork on github and start hacking.
 
