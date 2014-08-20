@@ -13,8 +13,29 @@ In the example below the module 'myservice.js' expose 2 GET services:
  - http://YOUR-APP/api/myservice/
  - http://YOUR-APP/api/myservice/:id
 
+You can change the default '/api' path for your API folder.
+Just add this to the createServer options:
+    
+    apiURIPrefix : "/MY_CUSTOM_PATH"
+
 For each service you need to define his params.<br>
 Only this params with this settings will be valid for this service.<br>
+
+By default, Fast will expose for you API documentation in JSON foramat in this path:
+    
+    /YOUR_API_FOLDER/docs
+
+You can change it by adding this to the createServer options:
+    
+    apiDocsPath : "MY_CUSTOM_DOCS_PATH"
+and the path will be:
+    
+    /YOUR_API_FOLDER/MY_CUSTOM_DOCS_PATH
+
+To disable the documentation feature, add this to createServer options:
+    
+    exposeDocs : false
+
 
 Inside your service, 'Core' object is available.
 
