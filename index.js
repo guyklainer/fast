@@ -21,15 +21,7 @@ var Fast = function( options ){
 
 	CoreModule.load( options || {}, function(){
 
-		Core.environment.load();
-		Core.config.load();
-		Core.auth.load();
-		Core.api.load();
-
-		if( fs.existsSync( Core.config.globals.viewRoot ) )
-			Core.view.load();
-
-		Core.api = Core.api.services;
+		modulesLoader();
 
 		// Make Core object immutable
 		// Preventing malicious altering
@@ -41,6 +33,29 @@ var Fast = function( options ){
 	return {
 		listen : listen
 	};
+};
+
+var modulesLoader = function(){
+	var extraModules = Core.config.globals.extraModules;
+
+	Core.environment.load();
+	Core.db.load();
+	Core.config.load();
+	Core.auth.load();
+	Core.api.load();
+
+	if( fs.existsSync( Core.config.globals.viewRoot ) )
+		Core.view.load();
+
+	if( extraModules && !Core[ extraModules ] && fs.existsSync( extraModules ) ) {
+		Core.modules.load( extraModules );
+		Core[extraModules] = Core.modules.modules;
+	}
+
+	Core.subscribers 	= Core.api.subscribers;
+	Core.api 			= Core.api.services;
+	Core.db 			= Core.db.connections;
+
 };
 
 var listen = function( port, callback ){
@@ -77,13 +92,59 @@ var listen = function( port, callback ){
 		}
 
 		if( server ){
-			if( Core.config.globals.enableWebSocket && Core.config.globals.webSocketConnectionCallback ){
+			if( Core.config.globals.enableWebSocket ){
 				io = socketIO.listen( server, { log: Core.config.globals.environment != "production" } );
 
-				Core.socket( io, Core.config.globals.webSocketConnectionCallback );
+				Core.socket.listenForConnections( io, Core.subscribers );
 			}
 
 			server.listen( port, callback );
+//			var x= Core.models.talk.getTalksByUserID("guy");
+//			x.then(function(a){
+//				console.log(a)
+//				},function(a){
+//					console.log(a)
+//				}
+//			);
+//			var x= Core.models.message.setPublic({
+//				talk_id : "124",
+//				sender_id : "guy",
+//				media_type : 1,
+//				content : "YYYYOOOOO" ,
+//				timestamp : Core.date().unix(),
+//				sent : 1,
+//				ballon_color: "#754778",
+//				text_color: "#ffffff",
+//				likes: [
+//					{ "user_id" : 876  },
+//					{ "user_id" : 555  }
+//				]
+//			}
+//			var x= Core.models.message.setPrivate({
+//				sender_id : "nir",
+//				receiver_id : "guy" ,
+//				content : "good" ,
+//				timestamp : Core.date().unix(),
+//				sent : 1,
+//				received : 0,
+//				media_type : 1,
+//				ballon_color: "#754778",
+//				text_color: "#ffffff",
+//				likes: [
+//					{ "user_id" : 876  },
+//					{ "user_id" : 555  }
+//				]
+//			});
+//			var x = Core.models.message.getPrivateMessages("nir","guy");
+//			x.then(function(a){
+////					a.title = "test";
+////					a.name = 2;
+////					Core.models.talk.set(a);
+//					console.log(a)
+//				},function(a){
+//					console.log(a)
+//				}
+//			);
 		}
 	});
 };

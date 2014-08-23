@@ -95,4 +95,5 @@ module.exports.load = function(){
 	loadErrorRoutes();
 };
 
-module.exports.services = API.getServices();
+module.exports.services 	= API.getServices();
+module.exports.subscribers 	= API.getSubscribers();

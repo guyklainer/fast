@@ -19,8 +19,9 @@ function API( location ){
 }
 
 // Static members
-API.apiDocs 	= {};
+API.apiDocs 	= { socket : {}, http : {} };
 API.services 	= {};
+API.subscribers = {};
 
 // Static methods
 API.getDocs = function(){
@@ -31,17 +32,43 @@ API.getServices = function(){
 	return API.services;
 };
 
+API.getSubscribers = function(){
+	return API.subscribers;
+};
+
 // Methods
 API.prototype.create = function(){
 
 	if( !this.module )
 		return;
 
-	var routes = this.module.routes || {};
+	var routes 		= this.module.routes 		|| {};
+	var subscribers = this.module.subscribers 	|| {};
 
 	for( var key in routes )
 		if( routes.hasOwnProperty( key ) )
 			this.add( key, routes[ key ] );
+
+	for( var k in subscribers )
+		if( subscribers.hasOwnProperty( k ) )
+			this.addEventSubscriber( k, subscribers[ k ] );
+};
+
+API.prototype.addEventSubscriber = function( key, subscriber ){
+	var routhPath = this.uri;
+
+	this.currRoute = subscriber;
+
+	this.validateRoute( true );
+
+	if( key != "/" )
+		routhPath = path.join( routhPath, key );
+
+	API.subscribers[ routhPath ] = this.module[subscriber.service];
+
+	//Add to API Docs
+	API.apiDocs.socket[ routhPath ] = subscriber;
+	delete API.apiDocs.socket[ routhPath ].service;
 };
 
 API.prototype.add = function( key, route ){
@@ -62,7 +89,8 @@ API.prototype.add = function( key, route ){
 		this.addService( routhPath, route.service );
 
 	//Add to API Docs
-	API.apiDocs[ routhPath ] = route;
+	API.apiDocs.http[ routhPath ] = route;
+	delete API.apiDocs.http[ routhPath ].service;
 };
 
 API.prototype.addRoute = function( routePath ){
@@ -111,14 +139,11 @@ API.prototype.routeCallback = function( req, res, currRoute ){
 API.prototype.addService = function( routePath, service ){
 
 	var splitedPath 	= routePath.split( path.sep ),
-		lastPath 		= splitedPath.slice( -1 ),
-		servicesPointer	= API.services;
-
-	// remove extension
-	splitedPath = splitedPath.slice( 2, -1 );
+		lastPath 		= splitedPath.slice( -1 )[0],
+		servicesPointer = API.services;
 
 	for( var i in splitedPath ){
-		if( !splitedPath.hasOwnProperty( i ) )
+		if( !splitedPath.hasOwnProperty( i ) || splitedPath[i] == "" )
 			continue;
 
 		if( !servicesPointer[ splitedPath[i] ] )
@@ -130,12 +155,12 @@ API.prototype.addService = function( routePath, service ){
 	servicesPointer[lastPath] = this.module[service];
 };
 
-API.prototype.validateRoute = function(){
+API.prototype.validateRoute = function( subscriber ){
 
-	var method 		= this.currRoute.httpMethod.toLowerCase(),
+	var method 		= subscriber ? null : this.currRoute.httpMethod.toLowerCase(),
 		service 	= this.currRoute.service;
 
-	if( this.validMethods.indexOf( method ) == -1 )
+	if( this.validMethods.indexOf( method ) == -1 && !subscriber )
 		Core.error( "invalid HTTP method " + method + " in " + this.location, true );
 
 	if( !this.module[ service ] )
@@ -144,10 +169,16 @@ API.prototype.validateRoute = function(){
 
 API.prototype.validateParams = function( req, params ){
 
-	var that 	= this,
-		res 	= {
-			status 	: true,
-			content	: ""
+	var that 		= this,
+		res 		= {
+			status 		: true,
+			content		: ""
+		},
+		paramsByType = {
+			params 		: [],
+			body 		: [],
+			query 		: []
+
 		};
 
 	for( var key in params ){
@@ -170,9 +201,17 @@ API.prototype.validateParams = function( req, params ){
 				break;
 		}
 
+		paramsByType[ param.paramType ] = param.name;
+
 		if( !res.status )
 			return res;
 	}
+
+	Object.keys( paramsByType ).forEach( function( paramsGroup ){
+		for( var param in req[paramsGroup] )
+			if( req[paramsGroup].hasOwnProperty( param ) && paramsByType[paramsGroup].indexOf( param ) == -1 )
+				delete req[paramsGroup][param];
+	});
 
 	return res;
 };
