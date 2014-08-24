@@ -28,6 +28,7 @@
     "errorhandler": "^1.0.1",
     "socket.io": "~1.x",
     "couchbase": "~1.2.4",
-    "moment": "~2.8.2"
+    "moment": "~2.8.2",
+    "chance": "~0.5.9"
   }
 }

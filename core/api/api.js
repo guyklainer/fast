@@ -55,7 +55,8 @@ API.prototype.create = function(){
 };
 
 API.prototype.addEventSubscriber = function( key, subscriber ){
-	var routhPath = this.uri;
+	var routhPath 	= this.uri,
+		that 	 	= this;
 
 	this.currRoute = subscriber;
 
@@ -64,7 +65,24 @@ API.prototype.addEventSubscriber = function( key, subscriber ){
 	if( key != "/" )
 		routhPath = path.join( routhPath, key );
 
-	API.subscribers[ routhPath ] = this.module[subscriber.service];
+	API.subscribers[ routhPath ] = function( req, res ){
+		var isAuthenticated = Core.auth.ensureAuthenticated( req, that.module.privileges ),
+			isValidParams 	= that.validateParams( req, that.module.parameters );
+
+		if( isAuthenticated ){
+
+			if( isValidParams.status ){
+				var promise = that.module[ subscriber.service ].apply( this, arguments );
+
+				if (promise)
+					promise.then( res.success, res.error );
+
+			} else
+				res.error( isValidParams.content );
+
+		} else
+			res.error( "Unauthorized" );
+	}
 
 	//Add to API Docs
 	API.apiDocs.socket[ routhPath ] = subscriber;
