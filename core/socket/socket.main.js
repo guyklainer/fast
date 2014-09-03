@@ -7,10 +7,10 @@ module.exports.listenForConnections = function( io, subscribers ){
 
 	io.sockets.on( 'connection', function( socket ){
 
-		var userID = socket.handshake.query.user;
+		var socketID = socket.handshake.query[Core.config.globals.socketKey];
 
-		if( !sockets[userID] )
-			sockets[userID] = {
+		if( !sockets[socketID] )
+			sockets[socketID] = {
 				socket : socket,
 
 				token : chance.hash({length: 9})
@@ -20,14 +20,14 @@ module.exports.listenForConnections = function( io, subscribers ){
 			if( !subscribers.hasOwnProperty( path ) )
 				continue;
 
-			startListen( sockets[userID], path );
+			startListen( sockets[socketID], path );
 		}
 
-		socket.emit( "connection_response", success( sockets[userID].token ) );
+		socket.emit( "connection_response", success( sockets[socketID].token ) );
 
 		socket.on( "disconnect", function(){
-			if( sockets[userID] )
-				delete sockets[userID];
+			if( sockets[socketID] )
+				delete sockets[socketID];
 		});
 	});
 
@@ -39,6 +39,7 @@ module.exports.listenForConnections = function( io, subscribers ){
 		socket.on( path, function( params ){
 			var req = {
 					body 			: params,
+					isSocket 		: true,
 					isAuthenticated	: function(){
 						return params.token && params.token == token;
 					}
@@ -65,14 +66,14 @@ module.exports.getSocket = function( id ){
 		return sockets[id].socket;
 };
 
-module.exports.joinRoom = function( userID, roomID ){
-	if( sockets[userID] )
-		sockets[userID].socket.join( roomID );
+module.exports.joinRoom = function( socketID, roomID ){
+	if( sockets[socketID] )
+		sockets[socketID].socket.join( roomID );
 };
 
-module.exports.leaveRoom = function( userID, roomID ){
-	if( sockets[userID] )
-		sockets[userID].socket.leave( roomID );
+module.exports.leaveRoom = function( socketID, roomID ){
+	if( sockets[socketID] )
+		sockets[socketID].socket.leave( roomID );
 };
 
 var success = function( data ){

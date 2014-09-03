@@ -49,9 +49,10 @@ API.prototype.create = function(){
 		if( routes.hasOwnProperty( key ) )
 			this.add( key, routes[ key ] );
 
-	for( var k in subscribers )
-		if( subscribers.hasOwnProperty( k ) )
-			this.addEventSubscriber( k, subscribers[ k ] );
+	if( Core.config.globals.enableWebSocket )
+		for( var k in subscribers )
+			if( subscribers.hasOwnProperty( k ) )
+				this.addEventSubscriber( k, subscribers[ k ] );
 };
 
 API.prototype.addEventSubscriber = function( key, subscriber ){

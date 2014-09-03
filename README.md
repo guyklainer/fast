@@ -116,6 +116,22 @@ Then, in the api folder, you can have this file:
         }
     };
     
+    module.exports.subscribers = {
+    	"set_private"  	: {
+        		summery 	: "Set Private Message",
+        		parameters 	: [
+        			{ name 		: "receiver_id",	description : "Receiver ID", 	required : true, dataType : "string", allowMultiple : false },
+        			{ name 		: "sender_id",	 	description : "Sender ID", 		required : true, dataType : "string", allowMultiple : false },
+        			{ name 		: "media_type",	 	description : "Media Type", 	required : true, dataType : "number", allowMultiple : false },
+        			{ name 		: "content",	 	description : "Content", 		required : true, dataType : "string", allowMultiple : false },
+        			{ name 		: "balloon_color",	description : "Balloon Color", 	required : false, dataType : "string", allowMultiple : false },
+        			{ name 		: "text_color",		description : "Text Color", 	required : false, dataType : "string", allowMultiple : false }
+        		],
+        
+        		service 	: "setPrivate"
+        	}
+    };
+    
     module.exports.privileges = {
         "service" : 0,
         "getByID" : 1
@@ -123,6 +139,22 @@ Then, in the api folder, you can have this file:
     
     module.exports.getByID = function( req, res ){
         console.log( req.params.id );
+    };
+    
+    module.exports.setPrivate = function( req, res ){
+    	req.body.timestamp 	= Core.date.unix();
+    	req.body.sent 		= 1;
+    	req.body.received 	= 0;
+    	req.body.likes 		= [];
+    
+    	Core.models.message.setPrivate( req.body ).then( res.success, res.error );
+    
+    	if( req.isSocket ){
+    		var sender 		= Core.socket.getSocket( req.body.sender_id ),
+    			receiver 	= Core.socket.getSocket( req.body.receiver_id );
+    
+    		sender.broadcast.to( receiver ).emit( "message", req.body );
+    	}
     };
     
     module.exports.service = function( req, res ){
@@ -152,17 +184,39 @@ The default port is 3000.<br>
 The callback gets no params and invoked when Fast finisg the init phase and ready for requests.. 
 
 
+Extra Modules
+-------------
+You can inject to the Core object one property of you own.
+For example, if you want to have 'models' module for the DB layer, add this to the options:
+
+    extraModules : "models"
+    
+Then create 'models' directory right under your project root.
+Lets say we have 'message' model. ( meaning 'message.js' file inside this directory )
+We can call it like this:
+
+    Core.models.message.setPrivate()
+
+
 Socket.io:
 ----------
 To enable socket.io support, add this to the createServer options:
     
-    enableWebSocket	            : true,
-    webSocketConnectionCallback	: function( socket ){
-        //your code
-    }
+    enableWebSocket	: true,
+    socketKey       : "KEY-IN-HANDSHAKE"
 
-webSocketConnectionCallback is the callback that invoked after new connection. 
-You will get the new socket as the first parameter.
+The socketKey property should hold the property name in the handshake phase of the connection.
+The value of this propery should hold the identifier for this socket. ( userID for example ).
+
+When true, Fast will look for 'subscribers' object that exported from each API end point.
+This object is the same as the 'routes' object, except the httpMethod property.
+Also, the paramType for socket params is always 'body'.
+
+You can get any socket object using:
+
+    Core.socket.getSocket( SOCKET-ID )
+
+
 
 SSL:
 ----------
