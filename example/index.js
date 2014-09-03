@@ -2,7 +2,7 @@
 var Fast  	= require( 'fast-api' ),
 	config 	= require( './config' );
 
-var TalksServer = Fast.createServer( config.fast );
+var ExampleServer = Fast.createServer( config.fast );
 
-TalksServer.listen( config.app.port );
+ExampleServer.listen( config.app.port );
 
