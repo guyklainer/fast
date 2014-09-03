@@ -186,13 +186,13 @@ The callback gets no params and invoked when Fast finisg the init phase and read
 
 Extra Modules
 -------------
-You can inject to the Core object one property of you own.
+You can inject to the Core object one property of you own.<br>
 For example, if you want to have 'models' module for the DB layer, add this to the options:
 
     extraModules : "models"
     
-Then create 'models' directory right under your project root.
-Lets say we have 'message' model. ( meaning 'message.js' file inside this directory )
+Then create 'models' directory right under your project root.<br>
+Lets say we have 'message' model. ( meaning 'message.js' file inside this directory )<br>
 We can call it like this:
 
     Core.models.message.setPrivate()
@@ -205,13 +205,13 @@ To enable socket.io support, add this to the createServer options:
     enableWebSocket	: true,
     socketKey       : "KEY-IN-HANDSHAKE"
 
-The socketKey property should hold the property name in the handshake phase of the connection.
-The value of this propery should hold the identifier for this socket. ( userID for example ).
-
-When true, Fast will look for 'subscribers' object that exported from each API end point.
-This object is the same as the 'routes' object, except the httpMethod property.
-Also, the paramType for socket params is always 'body'.
-
+The socketKey property should hold the property name in the handshake phase of the connection.<br>
+The value of this propery should hold the identifier for this socket. ( userID for example ).<br>
+<br>
+When true, Fast will look for 'subscribers' object that exported from each API end point.<br>
+This object is the same as the 'routes' object, except the httpMethod property.<br>
+Also, the paramType for socket params is always 'body'.<br>
+<br>
 You can get any socket object using:
 
     Core.socket.getSocket( SOCKET-ID )
