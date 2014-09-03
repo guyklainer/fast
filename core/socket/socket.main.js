@@ -1,5 +1,5 @@
 
-var change = require( "chance" );
+var chance = require( "chance" )();
 
 var sockets = {};
 
@@ -7,12 +7,13 @@ module.exports.listenForConnections = function( io, subscribers ){
 
 	io.sockets.on( 'connection', function( socket ){
 
-		var userID = socket.handshake.query.user_id;
+		var userID = socket.handshake.query.user;
 
 		if( !sockets[userID] )
 			sockets[userID] = {
 				socket : socket,
-				unique : change.hash({length: 9})
+
+				token : chance.hash({length: 9})
 			};
 
 		for( var path in subscribers ){
@@ -22,19 +23,24 @@ module.exports.listenForConnections = function( io, subscribers ){
 			startListen( sockets[userID], path );
 		}
 
-		socket.emit( "connection_response", success( sockets[userID].unique ) );
+		socket.emit( "connection_response", success( sockets[userID].token ) );
+
+		socket.on( "disconnect", function(){
+			if( sockets[userID] )
+				delete sockets[userID];
+		});
 	});
 
 	var startListen = function( socketParams, path ){
 
 		var socket = socketParams.socket,
-			unique = socketParams.unique;
+			token = socketParams.token;
 
 		socket.on( path, function( params ){
 			var req = {
 					body 			: params,
 					isAuthenticated	: function(){
-						return params.token && params.token == unique;
+						return params.token && params.token == token;
 					}
 				},
 
@@ -55,7 +61,8 @@ module.exports.listenForConnections = function( io, subscribers ){
 };
 
 module.exports.getSocket = function( id ){
-	return sockets[id].socket;
+	if( sockets[id] )
+		return sockets[id].socket;
 };
 
 module.exports.joinRoom = function( userID, roomID ){

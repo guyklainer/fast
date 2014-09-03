@@ -1,6 +1,6 @@
 {
   "name": "fast-api",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Build RESTful APIs in seconds.",
   "repository": {
     "type": "git",
@@ -26,7 +26,7 @@
     "connect-redis": "^2.0.0",
     "express-enforces-ssl": "^1.1.0",
     "errorhandler": "^1.0.1",
-    "socket.io": "~1.x",
+    "socket.io": "~0.9.x",
     "couchbase": "~1.2.4",
     "moment": "~2.8.2",
     "chance": "~0.5.9"

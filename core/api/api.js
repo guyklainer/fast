@@ -67,7 +67,7 @@ API.prototype.addEventSubscriber = function( key, subscriber ){
 
 	API.subscribers[ routhPath ] = function( req, res ){
 		var isAuthenticated = Core.auth.ensureAuthenticated( req, that.module.privileges ),
-			isValidParams 	= that.validateParams( req, that.module.parameters );
+			isValidParams 	= that.validateParams( req, subscriber.parameters, "body" );
 
 		if( isAuthenticated ){
 
@@ -86,7 +86,6 @@ API.prototype.addEventSubscriber = function( key, subscriber ){
 
 	//Add to API Docs
 	API.apiDocs.socket[ routhPath ] = subscriber;
-	delete API.apiDocs.socket[ routhPath ].service;
 };
 
 API.prototype.add = function( key, route ){
@@ -108,7 +107,6 @@ API.prototype.add = function( key, route ){
 
 	//Add to API Docs
 	API.apiDocs.http[ routhPath ] = route;
-	delete API.apiDocs.http[ routhPath ].service;
 };
 
 API.prototype.addRoute = function( routePath ){
@@ -185,7 +183,7 @@ API.prototype.validateRoute = function( subscriber ){
 		Core.error( this.location + " is not exporting " + service, true );
 };
 
-API.prototype.validateParams = function( req, params ){
+API.prototype.validateParams = function( req, params, paramTypeOverride ){
 
 	var that 		= this,
 		res 		= {
@@ -205,7 +203,7 @@ API.prototype.validateParams = function( req, params ){
 
 		var param = params[key];
 
-		switch( param.paramType ){
+		switch( param.paramType || paramTypeOverride ){
 			case "path":
 				res = that.validateParam( param, req.params );
 				break;
@@ -219,7 +217,7 @@ API.prototype.validateParams = function( req, params ){
 				break;
 		}
 
-		paramsByType[ param.paramType ] = param.name;
+		paramsByType[ param.paramType || paramTypeOverride ].push( param.name );
 
 		if( !res.status )
 			return res;
@@ -244,7 +242,7 @@ API.prototype.validateParam = function( param, reqParams ){
 
 	if( reqParams[ param.name ] ){
 
-		if( ( param.dataType == 'string' && typeof reqParams[ param.name ] === param.dataType && isNaN( reqParams[ param.name ] ) )  ||
+		if( ( param.dataType == 'string' && typeof reqParams[ param.name ] === param.dataType )  ||
 			( param.dataType == 'number' && !isNaN( reqParams[ param.name ] ) ) ||
 			( param.dataType == 'boolean' && typeof reqParams[ param.name ] === param.dataType || param.dataType == "true" || param.dataType == "false" ) ){
 			valid.status  = true;
