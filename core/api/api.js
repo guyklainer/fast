@@ -2,6 +2,7 @@
 var App 		= Core.app,
 	Q 			= require( "q" ),
 	path		= require( 'path' ),
+	http 		= require( 'http' ),
 	apiRoot		= Core.config.globals.apiRoot,
 	apiPrefix	= Core.config.globals.apiURIPrefix;
 
