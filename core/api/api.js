@@ -138,6 +138,8 @@ API.prototype.routeCallback = function( req, res, currRoute ){
 
 			res.deferred = Q.defer();
 
+			this.prepareReqResOnjects( res );
+
 			this.module[ service ]( req, res );
 
 			res.deferred.promise.then( function( data ){
@@ -243,9 +245,11 @@ API.prototype.validateParam = function( param, reqParams ){
 
 	if( reqParams[ param.name ] ){
 
-		if( ( param.dataType == 'string' && typeof reqParams[ param.name ] === param.dataType )  ||
+		if( ( param.dataType == 'array' && reqParams[ param.name ] instanceof Array )  ||
 			( param.dataType == 'number' && !isNaN( reqParams[ param.name ] ) ) ||
-			( param.dataType == 'boolean' && typeof reqParams[ param.name ] === param.dataType || param.dataType == "true" || param.dataType == "false" ) ){
+			( param.dataType == 'object' && typeof reqParams[ param.name ] === param.dataType ) ||
+			( param.dataType == 'string' && typeof reqParams[ param.name ] === param.dataType ) ||
+			( param.dataType == 'boolean' && typeof reqParams[ param.name ] === param.dataType 	|| param.dataType == "true" || param.dataType == "false" ) ){
 			valid.status  = true;
 			valid.content = "";
 
@@ -256,6 +260,30 @@ API.prototype.validateParam = function( param, reqParams ){
 	}
 
 	return valid;
+};
+
+API.prototype.prepareReqResOnjects = function( res ){
+
+	if( res.success || res.error )
+		Core.error( "possible conflict in response object" );
+
+	res.success 	= function(){success.apply( res, arguments )};
+	res.error 		= function(){Core.environment.error.apply( res, arguments )};
+};
+
+var success = function( data ){
+
+	var result = {
+		status  : 1,
+		content : data,
+		errors 	: []
+	};
+
+	if( this instanceof http.OutgoingMessage && this.deferred )
+		this.deferred.resolve( result );
+
+	else
+		return result;
 };
 
 module.exports = API;

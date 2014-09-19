@@ -21,5 +21,6 @@ module.exports.load = function() {
 	}
 
 	env.load( Core.app );
+
 	module.exports.error = env.error;
 };

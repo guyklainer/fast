@@ -2,10 +2,8 @@
 
 var fs 			= require( 'fs' ),
 	path		= require( 'path' ),
-	http 		= require( 'http' ),
 	API			= require( './api'),
 
-	response 	= http.OutgoingMessage.prototype,
 	apiRoot		= Core.config.globals.apiRoot;
 
 if( !fs.existsSync( apiRoot ) )
@@ -13,29 +11,6 @@ if( !fs.existsSync( apiRoot ) )
 
 // Private
 //----------
-var prepareReqResOnjects = function(){
-
-	if( response.success || response.error )
-		Core.error( "possible conflict in response object", true );
-
-	response.success 	= success;
-	response.error 		= Core.environment.error;
-};
-
-var success = function( data ){
-
-	var result = {
-		status  : 1,
-		content : data,
-		errors 	: []
-	};
-
-	if( this instanceof http.OutgoingMessage && this.deferred )
-		this.deferred.resolve( result );
-
-	else
-		return result;
-};
 
 var loadAPI = function( location ){
 	var root = location ? location : apiRoot;
@@ -84,8 +59,6 @@ var loadErrorRoutes = function(){
 // Public
 //----------
 module.exports.load = function(){
-
-	prepareReqResOnjects();
 
 	if( Core.config.globals.exposeDocs )
 		loadDocs();
