@@ -32,7 +32,7 @@ var loadDocs = function(){
 	var docsPath = path.join( Core.config.globals.apiURIPrefix, Core.config.globals.apiDocsPath );
 
 	Core.app.get( docsPath, function( req, res ){
-		res.json( res.success( API.getDocs() ) );
+		res.json( API.success( API.getDocs() ) );
 	});
 };
 

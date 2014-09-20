@@ -37,6 +37,21 @@ API.getSubscribers = function(){
 	return API.subscribers;
 };
 
+API.success = function( data ){
+
+	var result = {
+		status  : 1,
+		content : data,
+		errors 	: []
+	};
+
+	if( this instanceof http.OutgoingMessage && this.deferred )
+		this.deferred.resolve( result );
+
+	else
+		return result;
+};
+
 // Methods
 API.prototype.create = function(){
 
@@ -268,23 +283,8 @@ API.prototype.prepareReqResOnjects = function( res ){
 	if( res.success || res.error )
 		Core.error( "possible conflict in response object" );
 
-	res.success 	= function(){success.apply( res, arguments )};
+	res.success 	= function(){API.success.apply( res, arguments )};
 	res.error 		= function(){Core.environment.error.apply( res, arguments )};
-};
-
-var success = function( data ){
-
-	var result = {
-		status  : 1,
-		content : data,
-		errors 	: []
-	};
-
-	if( this instanceof http.OutgoingMessage && this.deferred )
-		this.deferred.resolve( result );
-
-	else
-		return result;
 };
 
 module.exports = API;
