@@ -1,6 +1,6 @@
 {
   "name": "fast-api",
-  "version": "0.3.11",
+  "version": "0.3.12",
   "description": "Build RESTful APIs in seconds.",
   "repository": {
     "type": "git",
@@ -29,6 +29,7 @@
     "socket.io": "~1.x",
     "couchbase": "~1.2.4",
     "moment": "~2.8.2",
-    "chance": "~0.5.9"
+    "chance": "~0.5.9",
+    "monitor.io": "0.0.5"
   }
 }

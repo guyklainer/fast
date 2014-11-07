@@ -5,6 +5,7 @@ var http 		= require( "http" ),
 	Q			= require( "q" ),
 	fs			= require( "fs" ),
 	socketIO 	= require( "socket.io" ),
+	monitorIO 	= require( 'monitor.io' ),
 	CoreModule 	= require( "./core/core" );
 
 var deferred 	= Q.defer(),
@@ -94,6 +95,8 @@ var listen = function( port, callback ){
 		if( server ){
 			if( Core.config.globals.enableWebSocket ){
 				io = socketIO( server );
+
+				io.use( monitorIO({ port : 8000 }));
 
 				Core.socket.listenForConnections( io, Core.subscribers );
 			}
