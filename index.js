@@ -99,52 +99,6 @@ var listen = function( port, callback ){
 			}
 
 			server.listen( port, callback );
-//			var x= Core.models.talk.getTalksByUserID("guy");
-//			x.then(function(a){
-//				console.log(a)
-//				},function(a){
-//					console.log(a)
-//				}
-//			);
-//			var x= Core.models.message.setPublic({
-//				talk_id : "124",
-//				sender_id : "guy",
-//				media_type : 1,
-//				content : "YYYYOOOOO" ,
-//				timestamp : Core.date().unix(),
-//				sent : 1,
-//				ballon_color: "#754778",
-//				text_color: "#ffffff",
-//				likes: [
-//					{ "user_id" : 876  },
-//					{ "user_id" : 555  }
-//				]
-//			}
-//			var x= Core.models.message.setPrivate({
-//				sender_id : "nir",
-//				receiver_id : "guy" ,
-//				content : "good" ,
-//				timestamp : Core.date().unix(),
-//				sent : 1,
-//				received : 0,
-//				media_type : 1,
-//				ballon_color: "#754778",
-//				text_color: "#ffffff",
-//				likes: [
-//					{ "user_id" : 876  },
-//					{ "user_id" : 555  }
-//				]
-//			});
-//			var x = Core.models.message.getPrivateMessages("nir","guy");
-//			x.then(function(a){
-////					a.title = "test";
-////					a.name = 2;
-////					Core.models.talk.set(a);
-//					console.log(a)
-//				},function(a){
-//					console.log(a)
-//				}
-//			);
 		}
 	});
 };

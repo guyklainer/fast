@@ -11,9 +11,8 @@ module.exports.listenForConnections = function( io, subscribers ){
 
 		if( !sockets[socketID] )
 			sockets[socketID] = {
-				socket : socket,
-
-				token : chance.hash({length: 9})
+				socket 	: socket,
+				token 	: chance.hash({length: 9})
 			};
 
 		for( var path in subscribers ){
