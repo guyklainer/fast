@@ -93,7 +93,7 @@ var listen = function( port, callback ){
 
 		if( server ){
 			if( Core.config.globals.enableWebSocket ){
-				io = socketIO.listen( server, { log: Core.config.globals.environment != "production" } );
+				io = socketIO( server );
 
 				Core.socket.listenForConnections( io, Core.subscribers );
 			}
