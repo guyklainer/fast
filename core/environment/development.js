@@ -47,7 +47,7 @@ module.exports.error = function( data, code ){
 
 		result.request = { params : this.req.params, body : this.req.body, query : this.req.query };
 
-		this.json( code || "500", result );
+		this.status( code || "500" ).json( result );
 
 	} else
 		return result;

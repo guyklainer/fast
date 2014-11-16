@@ -142,6 +142,8 @@ API.prototype.routeCallback = function( req, res, currRoute ){
 		params 		= currRoute.parameters,
 		service 	= currRoute.service;
 
+	this.prepareReqResOnjects( res );
+
 	if( privileges )
 		privileges = privileges[service];
 
@@ -153,8 +155,6 @@ API.prototype.routeCallback = function( req, res, currRoute ){
 		if( isValidParams.status ){
 
 			res.deferred = Q.defer();
-
-			this.prepareReqResOnjects( res );
 
 			this.module[ service ]( req, res );
 
