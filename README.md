@@ -3,6 +3,9 @@ Fast API
 
 Create RESTful API in seconds.
 
+[![npm version](https://badge.fury.io/js/fast-api.svg)](http://badge.fury.io/js/fast-api)
+[![Dependency Status](https://david-dm.org/guyklainer/fast.svg)](https://david-dm.org/guyklainer/fast)
+
 With Fast, you don't have to define routes for each service in your API.<br>
 Just put your service in your API folder, and the path to the service will be his access point.<br>
 You can also nest folders, Fast will handle it.

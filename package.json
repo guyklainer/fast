@@ -1,6 +1,6 @@
 {
   "name": "fast-api",
-  "version": "0.3.14",
+  "version": "0.3.15",
   "description": "Build RESTful APIs in seconds.",
   "repository": {
     "type": "git",
@@ -9,16 +9,16 @@
   "author": "Guy Klainer",
   "license": "MIT",
   "dependencies": {
-    "passport": "~0.1.17",
-    "q": "~0.9.7",
-    "passport-local": "~0.1.6",
-    "underscore": "~1.5.2",
-    "colors": "^0.6.2",
+    "passport": "~0.2.x",
+    "q": "~1.x",
+    "passport-local": "~1.x",
+    "underscore": "~1.x",
+    "colors": "^1.x",
     "traceback": "^0.3.0",
     "gzippo": "^0.2.0",
     "cookie-parser": "^1.1.0",
     "express-session": "^1.2.0",
-    "method-override": "^1.0.2",
+    "method-override": "^2.x",
     "body-parser": "^1.2.0",
     "morgan": "^1.1.1",
     "serve-favicon": "^2.0.0",
@@ -29,7 +29,8 @@
     "socket.io": "~1.x",
     "couchbase": "~1.2.4",
     "moment": "~2.8.2",
-    "chance": "~0.5.9",
-    "monitor.io": "0.0.5"
+    "chance": "~0.x",
+    "monitor.io": "0.1.x",
+    "helmet": "^0.5.2"
   }
 }

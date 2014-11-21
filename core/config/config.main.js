@@ -10,6 +10,7 @@ var Passport		= require( 'passport' ),
 	methodOverride 	= require( 'method-override'),
 	bodyParser 		= require( 'body-parser' ),
 	favicon 		= require( 'serve-favicon' ),
+	helmet			= require( 'helmet' ),
 	App 			= Core.app;
 
 // -- Global Settings
@@ -33,6 +34,8 @@ module.exports.load = function(){
 	}));
 	App.use( bodyParser.json() );
 	App.use( methodOverride() );
+
+	App.use( helmet() );
 
 	// -- Enforces SSL
 	if( Core.config.globals.useSSL ) {
