@@ -3,6 +3,7 @@ Fast API
 
 Create RESTful API in seconds.
 
+[![Build Status](https://travis-ci.org/guyklainer/fast.svg?branch=master)](https://travis-ci.org/guyklainer/fast)
 [![npm version](https://badge.fury.io/js/fast-api.svg)](http://badge.fury.io/js/fast-api)
 [![Dependency Status](https://david-dm.org/guyklainer/fast.svg)](https://david-dm.org/guyklainer/fast)
 
