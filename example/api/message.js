@@ -1,4 +1,16 @@
 
+module.exports.routes = {
+	"/"  	: {
+		summery 	: "Create User",
+		httpMethod 	: "post",
+		parameters 	:[
+			{ name : "username", description : "Username", required : true, dataType : "string", allowMultiple : false, paramType : "body" }
+		],
+
+		service 	: "setUser"
+	}
+};
+
 module.exports.subscribers = {
 
 	"get_private"  	: {
@@ -29,6 +41,10 @@ module.exports.subscribers = {
 module.exports.privileges = {
 	"service" : 0,
 	"getByID" : 1
+};
+
+module.exports.setUser = function( req, res ){
+	return Core.models.user.setUser( req.body.username );
 };
 
 module.exports.getPrivateMessages = function( req, res ){
