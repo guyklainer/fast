@@ -19,6 +19,7 @@ module.exports = {
 	exposeDocs			: true,
 	extraModules 		: false,
 	enableWebSocket 	: false,
+	websocketMonitorPort: 8000,
 	debug        		: false,
 
 	db           		: [{

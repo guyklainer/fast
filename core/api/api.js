@@ -15,6 +15,11 @@ function API( location ){
 	this.uri 			= path.join( apiPrefix, this.location.replace( apiRoot, "" ) );
 	this.module			= require( this.location ) || false;
 	this.validMethods	= [ 'get', 'post', 'put', 'delete' ];
+	this.paramTypeMap 	= {
+		path : "params",
+		body : "body",
+		query: "query"
+	};
 
 	this.create();
 }
@@ -220,23 +225,12 @@ API.prototype.validateParams = function( req, params, paramTypeOverride ){
 		if( !params.hasOwnProperty( key ) )
 			continue;
 
-		var param = params[key];
+		var param 		= params[key],
+			paramType	= this.paramTypeMap[ param.paramType || paramTypeOverride ];
 
-		switch( param.paramType || paramTypeOverride ){
-			case "path":
-				res = that.validateParam( param, req.params );
-				break;
+		res = that.validateParam( param, req[paramType] );
 
-			case "body":
-				res = that.validateParam( param, req.body );
-				break;
-
-			case "query":
-				res = that.validateParam( param, req.query );
-				break;
-		}
-
-		paramsByType[ param.paramType || paramTypeOverride ].push( param.name );
+		paramsByType[ paramType ].push( param.name );
 
 		if( !res.status )
 			return res;

@@ -96,7 +96,7 @@ var listen = function( port, callback ){
 			if( Core.config.globals.enableWebSocket ){
 				io = socketIO( server );
 
-				io.use( monitorIO({ port : 8000 }));
+				io.use( monitorIO({ port : Core.config.globals.websocketMonitorPort }));
 
 				Core.socket.listenForConnections( io, Core.subscribers );
 			}
