@@ -1,7 +1,7 @@
 
 var fs 			= require( 'fs' ),
 	express		= require( 'express' ),
-	_			= require( 'underscore' ),
+	_			= require( 'lodash' ),
 	path 		= require('path' );
 
 // Static Class Core

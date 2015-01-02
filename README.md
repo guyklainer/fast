@@ -24,7 +24,7 @@ Then, call it from other modules like this:<br>
     
     var result = Core.api.myservice();
 
-You have access to the underscore utility module from:
+You have access to the lodash utility module from:
     
     Core.utils
 

@@ -9,7 +9,7 @@ module.exports = {
 	environment			: process.env.NODE_ENV || 'development',
 	root				: root,
 	logsPath 			: path.join( root, 'logs/node.log' ),
-	viewRoot 			: path.join( root, 'views' ),
+//	viewRoot 			: path.join( root, 'views' ),
 	apiRoot 			: path.join( root, 'api' ),
 	layout 				: path.join( "interface", "layout" ),
 	apiURIPrefix		: "/api",
@@ -21,6 +21,8 @@ module.exports = {
 	enableWebSocket 	: false,
 	websocketMonitorPort: 8000,
 	debug        		: false,
+
+	loginPath 			: "/login",
 
 	db           		: [{
 		type 	: "DB_TYPE",

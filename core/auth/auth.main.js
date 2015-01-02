@@ -22,14 +22,15 @@ function loadLoginRoutes(){
 		failureRedirect	: '/'
 	};
 
-	App.post( '/login', Passport.authenticate( 'local', passportRoute ), login );
+	App.post( Core.config.globals.loginPath, Passport.authenticate( 'local', passportRoute ), login );
 
-	App.get( '/',  function( req, res, next ){
-		if( req.isAuthenticated() )
-			res.render( 'home/home', { title : "Test" } );
-		else
-			res.render( 'home/login', { title : "Test" } );
-	});
+	if( Core.config.globals.viewRoot )
+		App.get( '/',  function( req, res, next ){
+			if( req.isAuthenticated() )
+				res.render( 'home/home', { title : "Test" } );
+			else
+				res.render( 'home/login', { title : "Test" } );
+		});
 }
 
 module.exports.load = function(){

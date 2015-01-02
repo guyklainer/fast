@@ -1,6 +1,6 @@
 {
   "name": "fast-api",
-  "version": "0.3.18",
+  "version": "0.3.20",
   "description": "Build RESTful APIs in seconds.",
   "repository": {
     "type": "git",
@@ -12,7 +12,6 @@
     "passport": "~0.2.x",
     "q": "~1.x",
     "passport-local": "~1.x",
-    "underscore": "~1.x",
     "colors": "^1.x",
     "traceback": "^0.3.0",
     "gzippo": "^0.2.0",
@@ -31,6 +30,7 @@
     "moment": "~2.8.2",
     "chance": "~0.x",
     "monitor.io": "0.1.x",
-    "helmet": "^0.5.2"
+    "helmet": "^0.5.2",
+    "lodash": "^2.4.1"
   }
 }

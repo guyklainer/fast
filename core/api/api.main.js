@@ -40,10 +40,12 @@ var loadErrorRoutes = function(){
 
 	Core.app.use(function(err, req, res, next) {
 		console.log( "500", err );
-		res.render('500', {
-			status: err.status || 500,
-			error: err
-		});
+
+		if( Core.config.globals.viewRoot )
+			res.render('500', {
+				status: err.status || 500,
+				error: err
+			});
 	});
 
 	Core.app.use(function(req, res, next) {
