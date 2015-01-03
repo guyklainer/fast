@@ -2,13 +2,13 @@
 var http 		= require( "http" ),
 	path		= require( "path" ),
 	color 		= require( "colors" ),
-	Q			= require( "q" ),
+	promise		= require( "bluebird" ),
 	fs			= require( "fs" ),
 	socketIO 	= require( "socket.io" ),
 	monitorIO 	= require( 'monitor.io' ),
 	CoreModule 	= require( "./core/core" );
 
-var deferred 	= Q.defer(),
+var deferred 	= promise.defer(),
 	loadPromise = deferred.promise;
 
 
@@ -37,7 +37,8 @@ var Fast = function( options ){
 };
 
 var modulesLoader = function(){
-	var extraModules = Core.config.globals.extraModules;
+	var extraModules 	= Core.config.globals.extraModules,
+		apiFolderName 	= Core.config.globals.apiName;
 
 	Core.environment.load();
 	Core.db.load();
@@ -54,9 +55,8 @@ var modulesLoader = function(){
 	}
 
 	Core.subscribers 	= Core.api.subscribers;
-	Core.api 			= Core.api.services;
 	Core.db 			= Core.db.connections;
-
+	Core[apiFolderName]	= Core.api.services;
 };
 
 var listen = function( port, callback ){
@@ -88,9 +88,8 @@ var listen = function( port, callback ){
 			else
 				Core.error( "SSL keys are missing", true );
 
-		} else {
+		} else
 			server = http.createServer( Core.app );
-		}
 
 		if( server ){
 			if( Core.config.globals.enableWebSocket ){

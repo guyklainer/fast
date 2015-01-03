@@ -12,7 +12,7 @@ module.exports = {
 //	viewRoot 			: path.join( root, 'views' ),
 	apiRoot 			: path.join( root, 'api' ),
 	layout 				: path.join( "interface", "layout" ),
-	apiURIPrefix		: "/api",
+	apiName				: "api",
 	publicFolder 		: "ui",
 	headersFolder 		: "headers",
 	apiDocsPath			: "docs",

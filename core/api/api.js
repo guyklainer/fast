@@ -1,10 +1,9 @@
 
 var App 		= Core.app,
-	Q 			= require( "q" ),
 	path		= require( 'path' ),
 	http 		= require( 'http' ),
 	apiRoot		= Core.config.globals.apiRoot,
-	apiPrefix	= Core.config.globals.apiURIPrefix;
+	apiPrefix	= path.sep + Core.config.globals.apiName;
 
 
 // Class API
@@ -50,8 +49,8 @@ API.success = function( data ){
 		errors 	: []
 	};
 
-	if( this instanceof http.OutgoingMessage && this.deferred )
-		this.deferred.resolve( result );
+	if( this instanceof http.OutgoingMessage )
+		this.json( result );
 
 	else
 		return result;
@@ -87,6 +86,8 @@ API.prototype.addEventSubscriber = function( key, subscriber ){
 	if( key != "/" )
 		routhPath = path.join( routhPath, key );
 
+	this.module[ subscriber.service ] = Core.promise.promisify( this.wrapForPromise( this.module[ subscriber.service ] ) );
+
 	API.subscribers[ routhPath ] = function( req, res ){
 		var isAuthenticated = Core.auth.ensureAuthenticated( req, that.module.privileges ),
 			isValidParams 	= that.validateParams( req, subscriber.parameters, "body" );
@@ -94,17 +95,16 @@ API.prototype.addEventSubscriber = function( key, subscriber ){
 		if( isAuthenticated ){
 
 			if( isValidParams.status ){
-				var promise = that.module[ subscriber.service ].apply( this, arguments );
-
-				if (promise)
-					promise.then( res.success, res.error );
+				that.module[ subscriber.service ]( req )
+					.then( res.success )
+					.catch( res.error );
 
 			} else
 				res.error( isValidParams.content );
 
 		} else
 			res.error( "Unauthorized" );
-	}
+	};
 
 	//Add to API Docs
 	API.apiDocs.socket[ routhPath ] = subscriber;
@@ -117,14 +117,14 @@ API.prototype.add = function( key, route ){
 
 	this.validateRoute();
 
-	if( key != "/" )
+	if( key != path.sep )
 		routhPath = path.join( routhPath, key );
 
 	// Add route
 	this.addRoute( routhPath );
 
 	//Expose as service
-	if( key == "/" )
+	if( key == path.sep )
 		this.addService( routhPath, route.service );
 
 	//Add to API Docs
@@ -136,10 +136,36 @@ API.prototype.addRoute = function( routePath ){
 		currRoute 	= this.currRoute,
 		method 		= this.currRoute.httpMethod.toLowerCase();
 
+	this.module[ currRoute.service ] = Core.promise.promisify( this.wrapForPromise( this.module[ this.currRoute.service ] ) );
 
 	App[ method ]( routePath, function( req, res ){
 		that.routeCallback( req, res, currRoute );
 	});
+};
+
+API.prototype.wrapForPromise = function( func ){
+	return function( req, done ){
+		var result = func( req );
+
+		if( result instanceof Core.promise ){
+			if( result.isRejected() )
+				done( result.reason() );
+
+			else if( result.isFulfilled() ){
+				var error = result.value();
+
+				if( !error instanceof Error )
+					error = new Error( error );
+
+				done( null, error );
+			}
+
+		} else if( result instanceof Error )
+			done( result );
+
+		else
+			done( null, result );
+	}
 };
 
 API.prototype.routeCallback = function( req, res, currRoute ){
@@ -158,16 +184,11 @@ API.prototype.routeCallback = function( req, res, currRoute ){
 	if( isAuthenticated ){
 
 		if( isValidParams.status ){
-
-			res.deferred = Q.defer();
-
-			this.module[ service ]( req, res );
-
-			res.deferred.promise.then( function( data ){
-
-				data.request = { params : res.req.params, body : res.req.body, query : res.req.query };
-				res.json( data );
-			});
+			this.module[ service ]( req )
+				.bind( req )
+				.then( this.addRequestParams )
+				.then( res.success )
+				.catch( res.error );
 
 		} else
 			res.error( isValidParams.content, "400" );
@@ -176,14 +197,23 @@ API.prototype.routeCallback = function( req, res, currRoute ){
 		res.error( "Unauthorized", "401" );
 };
 
+API.prototype.addRequestParams = function( data ){
+
+	data.request = { params : this.params, body : this.body, query : this.query };
+	return data;
+
+};
+
 API.prototype.addService = function( routePath, service ){
 
 	var splitedPath 	= routePath.split( path.sep ),
-		lastPath 		= splitedPath.slice( -1 )[0],
-		servicesPointer = API.services;
+		lastPath 		= splitedPath.splice( -1 )[0],
+		servicesPointer = API.services,
+		apiFolderName 	= Core.config.globals.apiName;
+
 
 	for( var i in splitedPath ){
-		if( !splitedPath.hasOwnProperty( i ) || splitedPath[i] == "" )
+		if( !splitedPath.hasOwnProperty( i ) || splitedPath[i] == "" || splitedPath[i] == apiFolderName )
 			continue;
 
 		if( !servicesPointer[ splitedPath[i] ] )

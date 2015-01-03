@@ -29,7 +29,7 @@ var loadAPI = function( location ){
 };
 
 var loadDocs = function(){
-	var docsPath = path.join( Core.config.globals.apiURIPrefix, Core.config.globals.apiDocsPath );
+	var docsPath = path.join( path.sep + Core.config.globals.apiName, Core.config.globals.apiDocsPath );
 
 	Core.app.get( docsPath, function( req, res ){
 		res.json( API.success( API.getDocs() ) );

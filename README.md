@@ -24,6 +24,13 @@ Then, call it from other modules like this:<br>
     
     var result = Core.api.myservice();
 
+Beyond the scene, Fast is wraping eash API call will "bluebird" promise.
+So you can make DB calls, read files, etc.. and Just return the promise.
+Fast will handle it.
+"bluebird" module is available at
+
+    Core.promise
+
 You have access to the lodash utility module from:
     
     Core.utils
@@ -31,12 +38,12 @@ You have access to the lodash utility module from:
 You can change the default '/api' path for your API folder.
 Just add this to the createServer options:
     
-    apiURIPrefix : "/MY_CUSTOM_PATH"
+    apiName : "MY_CUSTOM_PATH"
 
 For each service you need to define his params.<br>
 Only this params with this settings will be valid for this service.<br>
 
-By default, Fast will expose for you API documentation in JSON foramat in this path:
+By default, Fast will expose for you API documentation in JSON format in this path:
     
     /YOUR_API_FOLDER/docs
 
@@ -81,22 +88,7 @@ Then, in the api folder, you can have this file:
             summery 	: "Get list",
             httpMethod 	: "get",
             parameters 	:[
-                {
-                    name            : "username",
-                    description     : "User Name",
-                    required 	    : true,
-                    dataType 		: "string",
-                    allowMultiple 	: true,
-                    paramType 		: "query"
-                },
-                {
-                    name 			: "id",
-                    description 	: "User ID",
-                    required 		: false,
-                    dataType 		: "number",
-                    allowMultiple 	: false,
-                    paramType 		: "path"
-                }
+                { name : "username", description : "User Name", required : true, dataType : "string", allowMultiple : true, paramType : "query" }
             ],
     
             service 	: "service"
@@ -106,14 +98,7 @@ Then, in the api folder, you can have this file:
             summery 	: "Get list by ID",
             httpMethod 	: "get",
             parameters	: [
-                {
-                    name            : "id",
-                    description     : "User ID",
-                    required        : true,
-                    dataType        : "number",
-                    allowMultiple   : false,
-                    paramType       : "path"
-                }
+                { name : "id", description : "User ID", required : true, dataType : "string", allowMultiple : true, paramType : "path" }
             ],
     
             service 	: "getByID"
@@ -141,11 +126,11 @@ Then, in the api folder, you can have this file:
         "getByID" : 1
     };
     
-    module.exports.getByID = function( req, res ){
-        console.log( req.params.id );
+    module.exports.getByID = function( req ){
+        return req.params.id;
     };
     
-    module.exports.setPrivate = function( req, res ){
+    module.exports.setPrivate = function( req ){
     	req.body.timestamp 	= Core.date.unix();
     	req.body.sent 		= 1;
     	req.body.received 	= 0;
@@ -161,8 +146,8 @@ Then, in the api folder, you can have this file:
     	}
     };
     
-    module.exports.service = function( req, res ){
-        res.success( "done" );
+    module.exports.service = function( req ){
+        return "done";
     };
 
 
@@ -172,7 +157,7 @@ Go to http://YOUR-APP/api/myservice<br><br>
 Available options for createServer method and defaults
 --------------
     {
-        apiURIPrefix	            : "/api",
+        apiName	                    : "api",
         apiDocsPath		            : "docs",
         exposeDocs		            : true,
         enableWebSocket	            : false,
